@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>刘珊 · 财务主管 / 财务BP | 个人数字档案与简历</title>
+<title>刘珊 · 财务主管 / 财务BP | 个人数字档案</title>
 <style>
-/* ========== 高端杂志风格 + 浅绿色放松色调 ========== */
+/* ========== 高端杂志/全屏铺满风格 + 浅绿色放松色调 ========== */
 :root {
-  --page-bg: #f2f7f4;        /* 网页端放松的浅绿色基调 */
+  --page-bg: #f2f7f4;        /* 纸张白/放松浅绿色基调 */
   --text-main: #111111;      /* 极黑正文 */
   --text-muted: #5c7065;     /* 高级灰绿 */
   --accent: #2e6942;         /* 稳重的森林绿强调色 */
@@ -111,12 +111,13 @@ body {
 .nav-link:hover { color: var(--text-main); }
 .nav-link.active { color: var(--text-main); font-weight: 600; }
 
-.lucky-btn-nav {
+.lucky-tip-badge {
   background: #fff8e1; color: #b78103; border: 1px solid #ffeeba;
   padding: 6px 12px; font-size: 0.75rem; letter-spacing: 1px;
-  cursor: pointer; transition: all 0.2s; font-weight: bold; border-radius: 4px;
+  font-weight: bold; border-radius: 4px; display: flex; align-items: center; gap: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); animation: pulseTip 2s infinite;
 }
-.lucky-btn-nav:hover { background: #ffecb5; }
+@keyframes pulseTip { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 
 .pdf-btn-nav {
   background: var(--accent); color: #fff; border: none;
@@ -173,7 +174,6 @@ body {
 .profile-card {
   border-top: 1px solid var(--text-main); padding-top: 25px;
 }
-/* 照片摆放位置样式 */
 .profile-photo-box {
   width: 100px;
   height: 130px;
@@ -186,12 +186,6 @@ body {
   justify-content: center;
   color: var(--text-muted);
   font-size: 0.8rem;
-  overflow: hidden;
-}
-.profile-photo-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .profile-name { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 15px; letter-spacing: 2px; }
 .profile-details { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; }
@@ -278,7 +272,7 @@ body {
   font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
 }
 
-/* ===== 打印/PDF 专用极简专业简历排版 (重磅升级) ===== */
+/* ===== 打印/PDF 专用极简专业简历排版 ===== */
 @media print {
   body { 
     overflow: auto !important; 
@@ -286,9 +280,7 @@ body {
     color: #111 !important; 
     font-size: 11pt !important;
   }
-  .magazine-cover, .nav, .lucky-btn-nav, .pdf-btn-nav, .footer { display: none !important; }
-  
-  /* 让所有板块平铺展开，自动完美适配 A4 纸张排版 */
+  .magazine-cover, .nav, .lucky-tip-badge, .pdf-btn-nav, .footer { display: none !important; }
   .page { 
     opacity: 1 !important; 
     transform: none !important; 
@@ -298,8 +290,6 @@ body {
     display: block !important; 
     min-height: auto !important;
   }
-  
-  /* 打印顶部的标准结构重组：把关键信息在一页内优雅呈现 */
   #page-overview::before {
     content: "刘珊 · 求职意向：财务主管 / 财务BP\A手机：133-4139-8551 | 邮箱：2801701239@qq.com\A年龄：26岁 (2000.09) | 学历：大专（本科在读） | 现居：广东深圳";
     white-space: pre;
@@ -311,12 +301,9 @@ body {
     font-weight: bold;
     color: #2e6942;
   }
-  
   .section-header, .overview-grid > .profile-card { display: none !important; }
   .overview-grid { display: block !important; }
   .overview-grid > .advantages-stack { width: 100% !important; }
-  
-  /* 让打印版每部分清晰分隔 */
   .skills-edu-layout, .experience-list { display: block !important; }
   .block-card, .exp-item { border-top: 1px solid #ccc !important; padding: 15px 0 !important; margin-bottom: 10px !important; }
   .exp-item { display: block !important; }
@@ -363,7 +350,7 @@ body {
         <button class="nav-link active" data-page="overview" onclick="switchPage('overview')">概览</button>
         <button class="nav-link" data-page="skills" onclick="switchPage('skills')">技能与教育</button>
         <button class="nav-link" data-page="experience" onclick="switchPage('experience')">工作经历</button>
-        <button class="lucky-btn-nav" onclick="showLuckyPhrase()">转运站</button>
+        <div class="lucky-tip-badge">💡 屏幕任意点击有惊喜</div>
         <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF简历</button>
       </div>
     </div>
@@ -382,9 +369,8 @@ body {
       <div class="overview-grid">
         <!-- 左侧个人档案与照片区域 -->
         <div class="profile-card">
-          <!--  提示：照片摆放位置。若有照片可将下方文字换成 <img src="photo.jpg" alt="刘珊照片"> -->
           <div class="profile-photo-box">
-            <span>证件照区域<br>可插入 photo.jpg</span>
+            <span>证件照区域</span>
           </div>
           <h2 class="profile-name">刘 珊</h2>
           <div class="profile-details">
@@ -397,7 +383,7 @@ body {
           </div>
         </div>
 
-        <!-- 右侧核心优势 (突出精彩部分并标注) -->
+        <!-- 右侧核心优势 -->
         <div class="advantages-stack">
           <div style="font-family:var(--font-serif); font-size:1.1rem; margin-bottom:5px; letter-spacing:1px; color:var(--accent);">核心竞争力亮点</div>
           
@@ -436,7 +422,6 @@ body {
       </div>
 
       <div class="skills-edu-layout">
-        <!-- 左侧：专业技能 -->
         <div>
           <div class="block-card" style="margin-top:0;">
             <h3 class="block-title">专业技能矩阵</h3>
@@ -458,7 +443,6 @@ body {
           </div>
         </div>
 
-        <!-- 右侧：教育背景 -->
         <div>
           <div class="block-card" style="margin-top:0;">
             <h3 class="block-title">教育背景</h3>
@@ -485,7 +469,7 @@ body {
       </footer>
     </section>
 
-    <!-- ====== 页面 3：工作经历（无删改，重点标注） ====== -->
+    <!-- ====== 页面 3：工作经历 ====== -->
     <section class="page" id="page-experience">
       <div class="section-header">
         <h1 class="section-title">工作经历</h1>
@@ -494,7 +478,6 @@ body {
 
       <div class="experience-list">
         
-        <!-- 经历 1 -->
         <div class="exp-item">
           <div class="exp-meta">
             <div class="exp-company">深圳市富亿森增材智造科技有限公司 (3D打印)</div>
@@ -509,7 +492,6 @@ body {
           </div>
         </div>
 
-        <!-- 经历 2 -->
         <div class="exp-item">
           <div class="exp-meta">
             <div class="exp-company">广州埃里森健康科技有限公司</div>
@@ -520,11 +502,10 @@ body {
             <div class="exp-point"><strong>多平台营收稽核：</strong> 负责5大电商平台（抖音、天猫、京东等）<span class="highlight-badge">月均超300万营收</span>核算。核对订单、支付与银行流水，<span class="highlight-badge">成本费用误差率控制在0.05%以内</span>。</div>
             <div class="exp-point"><strong>数据分析与支持：</strong> 使用 Power Query 清洗业务数据，定期出具各店铺及产品线利润表，协助优化选品与投放策略。</div>
             <div class="exp-point"><strong>供应链对账优化：</strong> 管理7家核心合作商往来账与应付账款，优化对账流程，<span class="highlight-badge">月度对账周期缩短30%</span>，加快资金周转。</div>
-            <div class="exp-point"><strong>库存精细化管理：</strong> 监控库存周转率，建立预警机制，<span class="highlight-badge">推动账实相符率由90%提升至98%以上</span>。</div>
+            <div class="exp-point"><strong>库存精细化管理：</strong> 监控库存周转率，建立库存预警机制，<span class="highlight-badge">推动账实相符率由90%提升至98%以上</span>。</div>
           </div>
         </div>
 
-        <!-- 经历 3 -->
         <div class="exp-item">
           <div class="exp-meta">
             <div class="exp-company">西安尚品汇网络科技有限公司</div>
@@ -532,14 +513,13 @@ body {
             <div class="exp-role">财务专员（兼管供应链）</div>
           </div>
           <div class="exp-content">
-            <div class="exp-point"><strong>跨平台库存协同：</strong> 熟练使用聚水潭、马帮等ERP系统，整合多平台订单与存货数据，<span class="highlight-badge">使订单处理效率提升25%</span>。</div>
+            <div class="exp-point"><strong>跨平台库存协同：</strong> 熟练使用聚水潭, 马帮等ERP系统，整合多平台订单与存货数据，<span class="highlight-badge">使订单处理效率提升25%</span>。</div>
             <div class="exp-point"><strong>供应链成本管控：</strong> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算供应商应付账款，从成本端提升业务毛利。</div>
             <div class="exp-point"><strong>资产盘点与风控：</strong> 主导海内外仓存货盘点，利用ERP动态管控库存，<span class="highlight-badge">账实相符率长期稳定在99%以上</span>。</div>
             <div class="exp-point"><strong>出口报关与税务：</strong> 协同完成出口报关流程，通过ERP归集出口税务数据并申报，确保合规。</div>
           </div>
         </div>
 
-        <!-- 经历 4 -->
         <div class="exp-item" style="border-bottom: 1px solid var(--text-main);">
           <div class="exp-meta">
             <div class="exp-company">广州市蓝箭环保设备有限公司</div>
@@ -565,9 +545,9 @@ body {
 <!-- 吉利话彩蛋弹窗 -->
 <div class="toast-overlay" id="luckyToast">
   <div class="toast-box">
-    <h3>✨ 获得今日打工人能量祝福 ✨</h3>
+    <h3> 获得今日打工人能量祝福 </h3>
     <p id="luckyText">祝您：薪水翻倍，准点下班！</p>
-    <button class="toast-close" onclick="closeLuckyToast()">收下吉利话，继续看简历 🚀</button>
+    <button class="toast-close" onclick="closeLuckyToast(event)">收下吉利话，继续看简历 🚀</button>
   </div>
 </div>
 
@@ -598,14 +578,25 @@ function exportPDF() {
   window.print();
 }
 
-// 随机打工人吉利话
+// 随机打工人吉利话列表
 const luckyPhrases = [
   " 诸事顺利！今天工作不超载！",
   " 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
-  "报销秒批过，开心每一天！",
+  " 报销秒批过，开心每一天！",
   " 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
-  "薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！"
+  " 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！",
+  " 脉动回来！今天审核的单子全都是对的，没有平账烦恼！"
 ];
+
+// 核心修改：监听整个页面的点击事件（点击屏幕任意地方即可触发，排除点击按钮本身的冲突）
+document.addEventListener('click', (e) => {
+  // 如果封面还没打开，或者点击的是弹窗本身/关闭按钮/导航按钮，则不触发全屏盲盒
+  const cover = document.getElementById('albumCover');
+  if (cover && !cover.classList.contains('opened')) return; // 封面没打开前先不触发
+  if (e.target.closest('.toast-box') || e.target.closest('.nav') || e.target.closest('.pdf-btn-nav')) return;
+  
+  showLuckyPhrase();
+});
 
 function showLuckyPhrase() {
   const randomIndex = Math.floor(Math.random() * luckyPhrases.length);
@@ -613,7 +604,8 @@ function showLuckyPhrase() {
   document.getElementById('luckyToast').style.display = 'flex';
 }
 
-function closeLuckyToast() {
+function closeLuckyToast(e) {
+  e.stopPropagation(); // 阻止事件冒泡，避免关弹窗的时候又触发一次点击
   document.getElementById('luckyToast').style.display = 'none';
 }
 </script>
