@@ -11,9 +11,7 @@
   --text-main: #2c3e35;      /* 深墨绿灰 */
   --text-muted: #5c7065;     /* 高级灰绿 */
   --accent: #2e6942;         /* 稳重的森林绿 */
-  --accent-light: #e4edf3;   /* 柔和浅蓝绿 */
   --highlight: #fff3cd;      /* 重点高亮荧光黄 */
-  --highlight-border: #ffecb5;
   --line-color: #d4e2d8;     
 }
 
@@ -28,7 +26,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  perspective: 1200px; /* 3D 视场角 */
+  perspective: 1200px;
   overflow: hidden;
 }
 
@@ -48,7 +46,7 @@ body {
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 顶部个人信息：一秒锁定亮点 */
+/* 顶部个人信息 */
 .resume-header {
   background: linear-gradient(135deg, #e4edf3 0%, #f4f8f5 100%);
   padding: 22px 35px;
@@ -117,20 +115,25 @@ body {
   margin-left: auto;
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
-.interactive-btn {
-  background: #e1ede4;
-  color: var(--accent);
-  border: 1px solid var(--line-color);
+/* 打工人摸鱼/吉利话彩蛋按钮 */
+.lucky-btn {
+  background: #fff8e1;
+  color: #b78103;
+  border: 1px solid #ffeeba;
   padding: 6px 14px;
   border-radius: 6px;
   font-size: 12px;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.interactive-btn:hover { background: var(--accent); color: white; }
+.lucky-btn:hover { background: #ffecb5; transform: scale(1.05); }
 
 .pdf-btn {
   background: var(--accent);
@@ -144,7 +147,7 @@ body {
 }
 .pdf-btn:hover { background: #1f472d; }
 
-/* 内容区域 (支持 3D 淡入淡出切页) */
+/* 内容区域 */
 .resume-content {
   flex: 1;
   padding: 25px 35px;
@@ -160,11 +163,11 @@ body {
 .tab-pane.active { display: block; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 重点精彩部分标注：荧光高亮特效 */
+/* 重点高亮特效 */
 .highlight-badge {
   background: var(--highlight);
   border-bottom: 2px solid #ffc107;
@@ -215,7 +218,7 @@ body {
   line-height: 1.6;
 }
 
-/* 工作经历精简排版 */
+/* 工作经历排版 */
 .exp-row {
   margin-bottom: 18px;
   border-left: 3px solid var(--accent);
@@ -255,34 +258,35 @@ body {
   text-align: justify;
 }
 
-/* 轻松互动：HR 专属评估弹窗样式 */
-.modal-overlay {
+/* 打工人吉利话浮动小气泡/弹窗 */
+.toast-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(3px);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
-.modal-box {
-  background: white;
-  width: 420px;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+.toast-box {
+  background: #fff;
+  width: 360px;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
   text-align: center;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-top: 5px solid #fbc02d;
 }
-@keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
+@keyframes bounceIn {
+  from { transform: scale(0.7); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-.modal-box h3 { color: var(--accent); margin-bottom: 15px; font-size: 18px; }
-.modal-box p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; text-align: left; }
-.close-modal {
-  background: var(--accent); color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 13px;
+.toast-box h3 { color: #b78103; margin-bottom: 10px; font-size: 16px; }
+.toast-box p { font-size: 14px; color: var(--text-main); line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
+.toast-close {
+  background: var(--accent); color: white; border: none; padding: 7px 18px; border-radius: 6px; cursor: pointer; font-size: 12.5px;
 }
 
 /* 滚动条美化 */
@@ -301,7 +305,7 @@ body {
 
 <div class="resume-3d-wrapper" id="resumeCard">
   
-  <!-- 顶部个人核心信息栏 -->
+  <!-- 顶部个人信息 -->
   <div class="resume-header">
     <div class="header-left">
       <h1>刘 珊</h1>
@@ -315,23 +319,23 @@ body {
 
   <!-- 互动导航栏 -->
   <div class="resume-nav">
-    <button class="nav-tab active" onclick="switchTab(event, 'skills-tab')">💡 专业技能与核心亮点</button>
+    <button class="nav-tab active" onclick="switchTab(event, 'skills-tab')">💡 专业技能与亮点</button>
     <button class="nav-tab" onclick="switchTab(event, 'exp-tab')">💼 工作经历</button>
     <button class="nav-tab" onclick="switchTab(event, 'edu-tab')">🎓 教育背景</button>
     
     <div class="nav-actions">
-      <!-- 轻松互动按钮：让HR眼前一亮 -->
-      <button class="interactive-btn" onclick="openHrModal()">✨ HR 快速匹配评估</button>
+      <!-- 打工人爱听的吉利话随机彩蛋 -->
+      <button class="lucky-btn" onclick="showLuckyPhrase()">🍀 摸鱼转运站</button>
       <button class="pdf-btn" onclick="window.print()">📥 导出 PDF</button>
     </div>
   </div>
 
-  <!-- 内容显示区域 -->
+  <!-- 内容区域 -->
   <div class="resume-content">
     
     <!-- 标签页 1：专业技能与核心亮点 -->
     <div id="skills-tab" class="tab-pane active">
-      <div class="section-title">专业技能矩阵（重点突出项已高亮标注）</div>
+      <div class="section-title">专业技能矩阵（重点精彩部分已荧光标注）</div>
       
       <div class="grid-2">
         <div class="card-block">
@@ -346,10 +350,10 @@ body {
       
       <div class="card-block" style="margin-bottom: 20px;">
         <h4>系统与平台规则</h4>
-        <p>精通金蝶财务软件，以及聚水潭、马帮、店小秘等供应链ERP。熟悉国内及跨境电商（亚马逊、TikTok、抖音、天猫等）的财务核算规则。</p>
+        <p>精通金蝶财务软件，以及聚水潭, 马帮, 店小秘等供应链ERP。熟悉国内及跨境电商（亚马逊, TikTok, 抖音, 天猫等）的财务核算规则。</p>
       </div>
 
-      <div class="section-title">核心竞争力闪光点</div>
+      <div class="section-title">核心竞争力亮点总结</div>
       <p style="font-size: 13px; color: var(--text-muted); line-height: 1.7;">
         打破传统财务边界，将<span class="highlight-badge">“硬核业财核算”</span>与<span class="highlight-badge">“前端自动化开发”</span>深度结合。不仅能从0到1搭建内部财务工作台提效，更能通过单体利润测算模型直接赋能业务管理层的选品与定价。
       </p>
@@ -357,7 +361,7 @@ body {
 
     <!-- 标签页 2：工作经历（原汁原味，无任何删改） -->
     <div id="exp-tab" class="tab-pane">
-      <div class="section-title">工作经历（重点业绩已荧光标注）</div>
+      <div class="section-title">工作经历（关键业绩指标已高亮突出）</div>
       
       <div class="exp-row">
         <div class="exp-header-row">
@@ -434,16 +438,12 @@ body {
 
 </div>
 
-<!-- HR 互动弹窗彩蛋 -->
-<div class="modal-overlay" id="hrModal">
-  <div class="modal-box">
-    <h3>🎯 智能岗位匹配评估</h3>
-    <p>
-      <strong>候选人：</strong>刘珊 (26岁)<br>
-      <strong>核心标签：</strong>业财融合 + AI数字化落地 + 制造业/跨境电商全盘账务。<br>
-      <strong>匹配结论：</strong>⭐ 98.5% 高度契合！不仅拥有扎实的财务 BP 与税务筹划底盘，更能通过 Claude Code / Power BI 帮贵司从0到1提升业财流转效率，实现真正的降本增效。
-    </p>
-    <button class="close-modal" onclick="closeHrModal()">太棒了，立即联系面试 🚀</button>
+<!-- 打工人吉利话随机彩蛋弹窗 -->
+<div class="toast-overlay" id="luckyToast">
+  <div class="toast-box">
+    <h3>✨ 获得今日打工人能量祝福 ✨</h3>
+    <p id="luckyText">祝您：薪水翻倍，准点下班！</p>
+    <button class="toast-close" onclick="closeLuckyToast()">收下吉利话，继续看简历 🚀</button>
   </div>
 </div>
 
@@ -460,26 +460,35 @@ function switchTab(evt, tabId) {
   evt.currentTarget.classList.add('active');
 }
 
-// 3D 鼠标跟随悬停动态微动特效 (给 HR 眼前一亮的交互)
+// 3D 鼠标跟随悬停动态微动特效
 const card = document.getElementById('resumeCard');
 document.addEventListener('mousemove', (e) => {
-  const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
-  const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+  const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
+  const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
   card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
 });
-
-// 恢复初始状态
 document.addEventListener('mouseleave', () => {
   card.style.transform = `rotateY(0deg) rotateX(0deg)`;
   card.style.transition = 'transform 0.5s ease';
 });
 
-// 弹窗控制
-function openHrModal() {
-  document.getElementById('hrModal').style.display = 'flex';
+// 随机吉利话库（打工人爱听的）
+const luckyPhrases = [
+  "🎉 诸事顺利！祝愿今天工作不超载！",
+  "💰 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
+  "☕ 报销秒批过，开心每一天！",
+  "🍀 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
+  "📈 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！"
+];
+
+function showLuckyPhrase() {
+  const randomIndex = Math.floor(Math.random() * luckyPhrases.length);
+  document.getElementById('luckyText').innerText = luckyPhrases[randomIndex];
+  document.getElementById('luckyToast').style.display = 'flex';
 }
-function closeHrModal() {
-  document.getElementById('hrModal').style.display = 'none';
+
+function closeLuckyToast() {
+  document.getElementById('luckyToast').style.display = 'none';
 }
 </script>
 
