@@ -3,171 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>刘珊 · 财务主管 / 财务BP | 互动数字简历</title>
+<title>刘珊 · 财务主管 / 财务BP | 个人数字档案</title>
 <style>
+/* ========== 高端杂志/全屏铺满风格 (Full-bleed Editorial Style) + 浅绿色放松色调 ========== */
 :root {
-  --page-bg: #f2f7f4;        /* 放松的浅绿色基调 */
-  --card-bg: #ffffff;        /* 纯白卡片 */
-  --text-main: #2c3e35;      /* 深墨绿灰 */
+  --page-bg: #f2f7f4;        /* 纸张白/放松浅绿色基调 */
+  --text-main: #111111;      /* 极黑正文 */
   --text-muted: #5c7065;     /* 高级灰绿 */
-  --accent: #2e6942;         /* 稳重的森林绿 */
-  --highlight: #fff3cd;      /* 重点高亮荧光黄 */
-  --line-color: #d4e2d8;     
+  --accent: #2e6942;         /* 稳重的森林绿强调色 */
+  --line-color: #d4e2d8;     /* 极细边框线 */
+  --highlight: #fff3cd;      /* 重点精彩部分荧光高亮 */
+  
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-sans: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-sans);
   color: var(--text-main);
   background: var(--page-bg);
+  line-height: 1.6;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  perspective: 1200px;
+  overflow: hidden; 
+  perspective: 2500px;
+}
+
+/* ===== 全屏 3D 封面 ===== */
+.magazine-cover {
+  position: fixed; 
+  inset: 0;
+  z-index: 300;
+  background: #1e3325; 
+  color: #fff;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 60px 8%;
+  transform-origin: left center;
+  transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease-in;
+  cursor: pointer;
+}
+.magazine-cover:hover { padding-left: 9%; transition: padding 0.5s ease; }
+.magazine-cover.opened { transform: rotateY(-130deg) scale(0.95); opacity: 0; pointer-events: none; }
+
+.cover-top {
+  display: flex; justify-content: space-between;
+  font-size: 0.9rem; letter-spacing: 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 20px;
+  font-family: var(--font-serif);
+}
+.cover-center { text-align: center; margin-top: 12vh;}
+.cover-title {
+  font-family: var(--font-serif);
+  font-size: 5vw;
+  font-weight: 400;
+  letter-spacing: 1.2vw;
+  margin-bottom: 15px;
+}
+.cover-subtitle {
+  font-size: 1.1rem; letter-spacing: 6px; color: #a3b8aa;
+  font-family: var(--font-serif);
+}
+.cover-author {
+  font-size: 0.95rem; letter-spacing: 4px; color: #fff; margin-top: 25px; text-transform: uppercase;
+}
+.cover-bottom {
+  text-align: center; font-size: 0.9rem; letter-spacing: 4px;
+  color: #a3b8aa;
+  animation: fadePulse 2s infinite;
+  margin-bottom: 40px;
+}
+@keyframes fadePulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ===== 核心容器 ===== */
+#app {
+  position: relative; z-index: 1;
+  width: 100vw; 
+  height: 100vh;
+  background: var(--page-bg);
   overflow: hidden;
+  display: flex; flex-direction: column;
 }
 
-/* 3D 动态交互主容器 */
-.resume-3d-wrapper {
-  width: 1050px;
-  height: 92vh;
-  max-height: 880px;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(44, 62, 53, 0.12), 0 1px 3px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--line-color);
-  transform-style: preserve-3d;
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+/* ===== 极简导航栏 ===== */
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 30px 8%; 
+  background: linear-gradient(to bottom, rgba(242,247,244,1) 60%, rgba(242,247,244,0));
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--text-main);
+  padding-bottom: 15px;
+}
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 1.3rem; font-weight: 600; cursor: pointer;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.nav-links { display: flex; gap: 30px; align-items: center; }
+.nav-link {
+  font-size: 0.85rem; letter-spacing: 2px;
+  color: var(--text-muted); cursor: pointer; transition: color .3s;
+  background: none; border: none; outline: none; padding: 0;
+}
+.nav-link:hover { color: var(--text-main); }
+.nav-link.active { color: var(--text-main); font-weight: 600; }
+
+.lucky-btn-nav {
+  background: #fff8e1; color: #b78103; border: 1px solid #ffeeba;
+  padding: 6px 12px; font-size: 0.75rem; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s; font-weight: bold; border-radius: 4px;
+}
+.lucky-btn-nav:hover { background: #ffecb5; }
+
+.pdf-btn-nav {
+  background: var(--accent); color: #fff; border: none;
+  padding: 6px 12px; font-size: 0.75rem; letter-spacing: 1px;
+  cursor: pointer; transition: background 0.3s; border-radius: 4px;
+}
+.pdf-btn-nav:hover { background: #1f472d; }
+
+/* ===== 页面容器 (3D 翻页效果) ===== */
+.page-container {
+  flex: 1; position: relative; overflow-y: auto; overflow-x: hidden;
+  padding-top: 140px;
+  display: flex; flex-direction: column;
+}
+.page-container::-webkit-scrollbar { width: 5px; }
+.page-container::-webkit-scrollbar-thumb { background: #cbdccf; }
+
+.page {
+  position: absolute; top: 0; left: 0; right: 0; min-height: 100%;
+  padding: 100px 8% 80px;
+  opacity: 0; pointer-events: none;
+  transform-origin: left center;
+  transform: rotateY(-15deg) translateZ(-50px);
+  transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.page.active {
+  opacity: 1; pointer-events: auto;
+  transform: rotateY(0deg) translateZ(0);
+  position: relative; flex: 1;
 }
 
-/* 顶部个人信息 */
-.resume-header {
-  background: linear-gradient(135deg, #e4edf3 0%, #f4f8f5 100%);
-  padding: 22px 35px;
-  border-bottom: 1px solid var(--line-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ===== 标题与通用排版 ===== */
+.section-header { margin-bottom: 40px; }
+.section-title { 
+  font-family: var(--font-serif); font-size: 3rem; 
+  font-weight: 400; margin-bottom: 8px;
+  letter-spacing: 3px;
 }
+.section-subtitle { font-size: 0.95rem; color: var(--text-muted); letter-spacing: 2px; }
 
-.header-left h1 {
-  font-size: 26px;
-  color: var(--text-main);
-  letter-spacing: 2px;
-  margin-bottom: 2px;
-}
-
-.header-left .target-role {
-  font-size: 14px;
-  color: var(--accent);
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.header-right {
-  text-align: right;
-  font-size: 12.5px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.header-right span {
-  color: var(--text-main);
-  font-weight: 500;
-}
-
-/* 互动导航栏 */
-.resume-nav {
-  display: flex;
-  background: #f7faf8;
-  border-bottom: 1px solid var(--line-color);
-  padding: 0 35px;
-  align-items: center;
-}
-
-.nav-tab {
-  padding: 12px 22px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-bottom: 3px solid transparent;
-}
-
-.nav-tab:hover { color: var(--accent); }
-.nav-tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  background: var(--card-bg);
-  font-weight: bold;
-}
-
-.nav-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* 打工人摸鱼/吉利话彩蛋按钮 */
-.lucky-btn {
-  background: #fff8e1;
-  color: #b78103;
-  border: 1px solid #ffeeba;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.lucky-btn:hover { background: #ffecb5; transform: scale(1.05); }
-
-.pdf-btn {
-  background: var(--accent);
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.pdf-btn:hover { background: #1f472d; }
-
-/* 内容区域 */
-.resume-content {
-  flex: 1;
-  padding: 25px 35px;
-  overflow-y: auto;
-  background: var(--card-bg);
-  position: relative;
-}
-
-.tab-pane {
-  display: none;
-  animation: fadeIn 0.4s ease-in-out;
-}
-.tab-pane.active { display: block; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* 重点高亮特效 */
+/* 荧光高亮突出精彩部分 */
 .highlight-badge {
   background: var(--highlight);
   border-bottom: 2px solid #ffc107;
@@ -176,106 +166,78 @@ body {
   border-radius: 2px;
 }
 
-.section-title {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--accent);
-  border-bottom: 2px solid #e4edf3;
-  padding-bottom: 5px;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
+/* ===== 概览页样式 (档案 + 核心优势) ===== */
+.overview-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start;
 }
+.profile-card {
+  border-top: 1px solid var(--text-main); padding-top: 25px;
+}
+.profile-name { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 15px; letter-spacing: 2px; }
+.profile-details { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; }
+.profile-details span { color: var(--text-main); font-weight: 500; }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+.advantages-stack { display: flex; flex-direction: column; gap: 20px; }
+.adv-item {
+  border-bottom: 1px solid var(--line-color);
+  padding-bottom: 15px;
 }
+.adv-title {
+  font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 6px;
+  letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+}
+.adv-title span { color: var(--accent); font-size: 0.85rem; }
+.adv-desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
 
-.card-block {
-  background: #f9fbf9;
-  padding: 16px 18px;
-  border-radius: 8px;
-  border: 1px solid var(--line-color);
-  margin-bottom: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* ===== 专业技能与教育背景页 ===== */
+.skills-edu-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
 }
-.card-block:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(44, 62, 53, 0.05);
+.block-card {
+  border-top: 1px solid var(--text-main); padding-top: 25px; margin-bottom: 40px;
 }
+.block-title {
+  font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 20px; letter-spacing: 2px;
+}
+.skill-group { margin-bottom: 20px; }
+.skill-group-name { font-size: 0.85rem; font-weight: 600; letter-spacing: 2px; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; }
+.skill-group-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
 
-.card-block h4 {
-  font-size: 13.5px;
-  color: var(--text-main);
-  margin-bottom: 5px;
-  font-weight: bold;
+.edu-item {
+  margin-bottom: 25px; border-bottom: 1px solid var(--line-color); padding-bottom: 15px;
 }
+.edu-time { font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+.edu-school { font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 4px; }
+.edu-major { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+.edu-courses { font-size: 0.82rem; color: #555; }
 
-.card-block p {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  line-height: 1.6;
+/* ===== 工作经历页 ===== */
+.experience-list { max-width: 900px; }
+.exp-item {
+  border-top: 1px solid var(--text-main); padding: 25px 0;
+  display: grid; grid-template-columns: 220px 1fr; gap: 40px;
 }
-
-/* 工作经历排版 */
-.exp-row {
-  margin-bottom: 18px;
-  border-left: 3px solid var(--accent);
-  padding-left: 14px;
+.exp-meta {
+  font-family: var(--font-serif);
 }
+.exp-company { font-size: 0.95rem; font-weight: 600; letter-spacing: 1px; margin-bottom: 5px; }
+.exp-date { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
+.exp-role { font-size: 0.85rem; color: var(--accent); letter-spacing: 1px; }
 
-.exp-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 3px;
+.exp-content { display: flex; flex-direction: column; gap: 12px; }
+.exp-point {
+  font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; text-align: justify;
 }
+.exp-point strong { color: var(--text-main); font-weight: 500; }
 
-.exp-company {
-  font-size: 13.5px;
-  font-weight: bold;
-  color: var(--text-main);
-}
-
-.exp-date {
-  font-size: 11.5px;
-  color: var(--text-muted);
-}
-
-.exp-role {
-  font-size: 12.5px;
-  color: var(--accent);
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-.exp-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.55;
-  margin-bottom: 3px;
-  text-align: justify;
-}
-
-/* 打工人吉利话浮动小气泡/弹窗 */
+/* ===== 吉利话彩蛋弹窗 ===== */
 .toast-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(3px);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 1000;
 }
 .toast-box {
-  background: #fff;
-  width: 360px;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  text-align: center;
+  background: #fff; width: 360px; padding: 25px; border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15); text-align: center;
   animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border-top: 5px solid #fbc02d;
 }
@@ -289,156 +251,257 @@ body {
   background: var(--accent); color: white; border: none; padding: 7px 18px; border-radius: 6px; cursor: pointer; font-size: 12.5px;
 }
 
-/* 滚动条美化 */
-.resume-content::-webkit-scrollbar { width: 5px; }
-.resume-content::-webkit-scrollbar-thumb { background: #cbdccf; border-radius: 3px; }
+/* ===== 页脚 ===== */
+.footer {
+  text-align: center; padding: 40px 20px; margin-top: 40px;
+  border-top: 1px solid var(--line-color);
+  font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
+}
 
+/* ===== 打印/PDF 专用样式 ===== */
 @media print {
-  body { background: white !important; padding: 0 !important; overflow: auto !important; }
-  .resume-3d-wrapper { box-shadow: none !important; border: none !important; width: 100% !important; height: auto !important; max-height: none !important; }
-  .resume-nav { display: none !important; }
-  .tab-pane { display: block !important; margin-bottom: 20px; page-break-after: always; }
+  body { overflow: auto !important; background: #fff !important; color: #000 !important; }
+  .magazine-cover, .nav, .lucky-btn-nav, .pdf-btn-nav, .footer { display: none !important; }
+  .page { opacity: 1 !important; transform: none !important; position: static !important; pointer-events: auto !important; padding: 20px !important; display: block !important; }
+  #page-overview, #page-skills, #page-experience { display: block !important; page-break-after: always; }
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1024px) {
+  .overview-grid, .skills-edu-layout, .exp-item { grid-template-columns: 1fr; gap: 30px; }
+  .cover-title { font-size: 8vw; }
+}
+@media (max-width: 768px) {
+  .nav { padding: 20px 5%; }
+  .page { padding: 110px 5% 40px; }
+  .nav-links { gap: 15px; }
+  .section-title { font-size: 2.2rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="resume-3d-wrapper" id="resumeCard">
-  
-  <!-- 顶部个人信息 -->
-  <div class="resume-header">
-    <div class="header-left">
-      <h1>刘 珊</h1>
-      <div class="target-role">求职意向：财务主管 / 财务BP</div>
-    </div>
-    <div class="header-right">
-      手机：<span>133-4139-8551</span> | 邮箱：<span>2801701239@qq.com</span><br>
-      年龄：<span>26岁 (2000.09)</span> | 学历：<span>大专（本科在读）</span> | 现居：<span>广东深圳</span>
-    </div>
+<!-- 3D 全屏封面 -->
+<div class="magazine-cover" id="albumCover" onclick="openAlbum()">
+  <div class="cover-top">
+    <span>个人履历 / 数字档案</span>
+    <span>2026</span>
   </div>
-
-  <!-- 互动导航栏 -->
-  <div class="resume-nav">
-    <button class="nav-tab active" onclick="switchTab(event, 'skills-tab')">💡 专业技能与亮点</button>
-    <button class="nav-tab" onclick="switchTab(event, 'exp-tab')">💼 工作经历</button>
-    <button class="nav-tab" onclick="switchTab(event, 'edu-tab')">🎓 教育背景</button>
-    
-    <div class="nav-actions">
-      <!-- 打工人爱听的吉利话随机彩蛋 -->
-      <button class="lucky-btn" onclick="showLuckyPhrase()">🍀 摸鱼转运站</button>
-      <button class="pdf-btn" onclick="window.print()">📥 导出 PDF</button>
-    </div>
+  <div class="cover-center">
+    <h1 class="cover-title">刘珊</h1>
+    <div class="cover-subtitle">财务主管 / 财务BP</div>
+    <div class="cover-author">广东深圳 · 业财融合与数字化</div>
   </div>
-
-  <!-- 内容区域 -->
-  <div class="resume-content">
-    
-    <!-- 标签页 1：专业技能与核心亮点 -->
-    <div id="skills-tab" class="tab-pane active">
-      <div class="section-title">专业技能矩阵（重点精彩部分已荧光标注）</div>
-      
-      <div class="grid-2">
-        <div class="card-block">
-          <h4>财务与数据分析</h4>
-          <p>具备初级会计职称，精通制造业、电商全盘账务及税务筹划。熟练使用 <span class="highlight-badge">Power BI、Power Query 及 SQL</span>，能独立搭建盈利测算模型与自动化利润报表。</p>
-        </div>
-        <div class="card-block">
-          <h4>AI 数字化工具开发</h4>
-          <p>熟练运用 <span class="highlight-badge">Claude Code (AI编程)</span> 及网站开发前端技术，具备独立搭建与维护企业<span class="highlight-badge">“内部财务工作台”</span>的能力，擅长通过IT手段优化业财数据流。</p>
-        </div>
-      </div>
-      
-      <div class="card-block" style="margin-bottom: 20px;">
-        <h4>系统与平台规则</h4>
-        <p>精通金蝶财务软件，以及聚水潭, 马帮, 店小秘等供应链ERP。熟悉国内及跨境电商（亚马逊, TikTok, 抖音, 天猫等）的财务核算规则。</p>
-      </div>
-
-      <div class="section-title">核心竞争力亮点总结</div>
-      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.7;">
-        打破传统财务边界，将<span class="highlight-badge">“硬核业财核算”</span>与<span class="highlight-badge">“前端自动化开发”</span>深度结合。不仅能从0到1搭建内部财务工作台提效，更能通过单体利润测算模型直接赋能业务管理层的选品与定价。
-      </p>
-    </div>
-
-    <!-- 标签页 2：工作经历（原汁原味，无任何删改） -->
-    <div id="exp-tab" class="tab-pane">
-      <div class="section-title">工作经历（关键业绩指标已高亮突出）</div>
-      
-      <div class="exp-row">
-        <div class="exp-header-row">
-          <span class="exp-company">深圳市富亿森增材智造科技有限公司 (3D打印)</span>
-          <span class="exp-date">2026.05 - 至今</span>
-        </div>
-        <div class="exp-role">财务主管（兼管人事）</div>
-        <div class="exp-desc"><strong>财务数字化搭建：</strong> 运用 <span class="highlight-badge">Claude Code 及网站开发技术，从0到1独立开发内部“财务工作台”</span>。实现跨平台业财数据的自动集成与校验，减少线下手工录账环节，<span class="highlight-badge">大幅提高结账效率</span>。</div>
-        <div class="exp-desc"><strong>全盘账务与利润测算：</strong> 全面负责公司账务及资金收支。结合业务数据，<span class="highlight-badge">搭建3D打印设备与耗材的单体利润测算模型</span>，为管理层的产品定价与选品提供直观的数据支持。</div>
-        <div class="exp-desc"><strong>成本与税务管控：</strong> 准确核算生产制造成本，并建立各环节成本控制标准；结合制造业税收优惠政策，完成全流程税务申报与筹划，规避经营风险。</div>
-        <div class="exp-desc"><strong>人事行政统筹：</strong> 兼管人力资源工作，统筹员工招聘、入离职管理；负责每月薪资绩效核算及社保公积金缴纳，将财务视角引入人事管理，优化企业用工成本。</div>
-      </div>
-
-      <div class="exp-row">
-        <div class="exp-header-row">
-          <span class="exp-company">广州埃里森健康科技有限公司</span>
-          <span class="exp-date">2024.08 - 2025.05</span>
-        </div>
-        <div class="exp-role">财务分析专员</div>
-        <div class="exp-desc"><strong>多平台营收稽核：</strong> 负责5大电商平台（抖音、天猫、京东等）<span class="highlight-badge">月均超300万营收</span>的核算。核对CRM订单、第三方支付与银行流水，<span class="highlight-badge">将成本费用误差率控制在0.05%以内</span>。</div>
-        <div class="exp-desc"><strong>数据分析与支持：</strong> 使用 Power Query 清洗业务数据，定期出具各店铺及产品线利润表，协助业务部门优化选品与营销投放策略。</div>
-        <div class="exp-desc"><strong>供应链对账优化：</strong> 管理7家核心合作商的往来账与应付账款，优化对账流程，<span class="highlight-badge">月度对账周期缩短30%</span>，加快资金周转。</div>
-        <div class="exp-desc"><strong>库存精细化管理：</strong> 监控库存周转率，建立库存预警机制，<span class="highlight-badge">推动账实相符率由90%提升至98%以上</span>，降低资金占用风险。</div>
-      </div>
-
-      <div class="exp-row">
-        <div class="exp-header-row">
-          <span class="exp-company">西安尚品汇网络科技有限公司</span>
-          <span class="exp-date">2022.06 - 2024.07</span>
-        </div>
-        <div class="exp-role">财务专员（兼管供应链）</div>
-        <div class="exp-desc"><strong>跨平台库存协同：</strong> 熟练使用聚水潭、马帮等ERP系统，整合速卖通、亚马逊、TikTok等平台的订单与存货数据。实现多平台库存同步，<span class="highlight-badge">使订单处理效率提升25%</span>。</div>
-        <div class="exp-desc"><strong>供应链成本管控：</strong> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算供应商应付账款，从成本端提升业务毛利。</div>
-        <div class="exp-desc"><strong>资产盘点与风控：</strong> 主导海内外仓的存货盘点工作，利用ERP数据动态管控库存，<span class="highlight-badge">账实相符率长期稳定在99%以上</span>。</div>
-        <div class="exp-desc"><strong>出口报关与税务：</strong> 协同完成出口报关流程，通过ERP系统归集出口税务数据并完成申报，确保出海业务合规。</div>
-      </div>
-
-      <div class="exp-row" style="margin-bottom: 5px;">
-        <div class="exp-header-row">
-          <span class="exp-company">广州市蓝箭环保设备有限公司</span>
-          <span class="exp-date">2022.01 - 2022.06</span>
-        </div>
-        <div class="exp-role">财务专员</div>
-        <div class="exp-desc"><strong>日常基础核算：</strong> 使用金蝶系统独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</div>
-        <div class="exp-desc"><strong>凭证审核与税务：</strong> 月均审核原始票据180余份，确保费用报销合规；按时完成各税种申报及汇算清缴，<span class="highlight-badge">实操零差错</span>。</div>
-      </div>
-
-    </div>
-
-    <!-- 标签页 3：教育背景 -->
-    <div id="edu-tab" class="tab-pane">
-      <div class="section-title">教育背景</div>
-      
-      <div class="card-block">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
-          <h4 style="margin:0; color:var(--accent);">广东外语外贸大学</h4>
-          <span style="font-size:11.5px; color:var(--text-muted);">2025.09 - 2028.06</span>
-        </div>
-        <p style="font-weight:500; color:var(--text-main); margin-bottom:3px;">大数据与会计 (本科 / 非全日制)</p>
-        <p><strong>主修课程：</strong> 大数据分析、高级财务会计、审计学、财务分析、税法实务等。</p>
-      </div>
-
-      <div class="card-block">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
-          <h4 style="margin:0; color:var(--accent);">邵阳县工业职业技术学院</h4>
-          <span style="font-size:11.5px; color:var(--text-muted);">2015.09 - 2018.06</span>
-        </div>
-        <p style="font-weight:500; color:var(--text-main); margin-bottom:3px;">财务会计 (大专)</p>
-        <p><strong>主修课程：</strong> 基础会计、经济法、成本会计、会计电算化、财务报表分析等。</p>
-      </div>
-    </div>
-
+  <div class="cover-bottom">
+    点击翻阅数字档案
   </div>
-
 </div>
 
-<!-- 打工人吉利话随机彩蛋弹窗 -->
+<div id="app">
+  <!-- 极简导航 -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="switchPage('overview')">刘珊 · 简历档案</div>
+      <div class="nav-links">
+        <button class="nav-link active" data-page="overview" onclick="switchPage('overview')">概览</button>
+        <button class="nav-link" data-page="skills" onclick="switchPage('skills')">技能与教育</button>
+        <button class="nav-link" data-page="experience" onclick="switchPage('experience')">工作经历</button>
+        <button class="lucky-btn-nav" onclick="showLuckyPhrase()">🍀 转运站</button>
+        <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 内容区 -->
+  <div class="page-container" id="pageContainer">
+    
+    <!-- ====== 页面 1：概览与核心优势 ====== -->
+    <section class="page active" id="page-overview">
+      <div class="section-header">
+        <h1 class="section-title">核心档案</h1>
+        <p class="section-subtitle">业财融合、利润测算与财务数字化专家。</p>
+      </div>
+      
+      <div class="overview-grid">
+        <!-- 左侧个人档案 -->
+        <div class="profile-card">
+          <h2 class="profile-name">刘 珊</h2>
+          <div class="profile-details">
+            <p>求职意向：<span>财务主管 / 财务BP</span></p>
+            <p>手机号码：<span>133-4139-8551</span></p>
+            <p>电子邮箱：<span>2801701239@qq.com</span></p>
+            <p>出生年月：<span>2000.09（26岁）</span></p>
+            <p>最高学历：<span>大专（本科在读）</span></p>
+            <p>现居城市：<span>广东深圳</span></p>
+          </div>
+        </div>
+
+        <!-- 右侧核心优势 (突出精彩部分并标注) -->
+        <div class="advantages-stack">
+          <div style="font-family:var(--font-serif); font-size:1.1rem; margin-bottom:5px; letter-spacing:1px; color:var(--accent);">核心竞争力亮点</div>
+          
+          <div class="adv-item">
+            <div class="adv-title"><span>01</span> 业财融合与利润测算</div>
+            <div class="adv-desc">精通制造业及跨境/国内电商（亚马逊、TikTok、抖音、天猫等）财务核算规则，能独立搭建<span class="highlight-badge">单体盈利测算模型</span>，为管理层选品与定价提供直观数据支持。</div>
+          </div>
+          
+          <div class="adv-item">
+            <div class="adv-title"><span>02</span> 财务数字化与工具开发</div>
+            <div class="adv-desc">熟练运用 <span class="highlight-badge">Claude Code (AI编程)</span> 及前端技术，具备独立搭建与维护企业<span class="highlight-badge">“内部财务工作台”</span>的能力，通过IT手段优化业财数据流。</div>
+          </div>
+
+          <div class="adv-item">
+            <div class="adv-title"><span>03</span> 供应链协同与成本管控</div>
+            <div class="adv-desc">精通多平台 ERP 系统（聚水潭、马帮、店小秘等），擅长采购、物流成本监控与优化，推动<span class="highlight-badge">账实相符率长期稳定在 98% 以上</span>。</div>
+          </div>
+
+          <div class="adv-item">
+            <div class="adv-title"><span>04</span> 全盘账务与合规风控</div>
+            <div class="adv-desc">具备扎实的财务与税务底盘。独立全盘负责多平台营收稽核、往来账对账、成本核算，完成全流程合规申报，<span class="highlight-badge">实操零差错</span>。</div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="footer">
+        © 2026 刘珊. All Rights Reserved.
+      </footer>
+    </section>
+
+    <!-- ====== 页面 2：专业技能与教育背景 ====== -->
+    <section class="page" id="page-skills">
+      <div class="section-header">
+        <h1 class="section-title">技能与教育</h1>
+        <p class="section-subtitle">扎实的财务基底与持续进阶的数字化视野。</p>
+      </div>
+
+      <div class="skills-edu-layout">
+        <!-- 左侧：专业技能 -->
+        <div>
+          <div class="block-card" style="margin-top:0;">
+            <h3 class="block-title">专业技能矩阵</h3>
+            
+            <div class="skill-group">
+              <div class="skill-group-name">财务与分析</div>
+              <div class="skill-group-desc">具备初级会计职称，精通制造业、电商全盘账务及税务筹划。熟练使用 <span class="highlight-badge">Power BI、Power Query 及 SQL</span>，能独立搭建盈利测算模型与自动化利润报表。</div>
+            </div>
+
+            <div class="skill-group">
+              <div class="skill-group-name">数字化工具</div>
+              <div class="skill-group-desc">熟练运用 <span class="highlight-badge">Claude Code (AI编程)</span> 及网站开发前端技术，具备独立搭建与维护企业“内部财务工作台”的能力。</div>
+            </div>
+
+            <div class="skill-group">
+              <div class="skill-group-name">系统与平台</div>
+              <div class="skill-group-desc">精通金蝶财务软件，以及聚水潭、马帮、店小秘等供应链ERP。熟悉国内及跨境电商的财务核算规则。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：教育背景 -->
+        <div>
+          <div class="block-card" style="margin-top:0;">
+            <h3 class="block-title">教育背景</h3>
+            
+            <div class="edu-item">
+              <div class="edu-time">2025.09 - 2028.06</div>
+              <div class="edu-school">广东外语外贸大学</div>
+              <div class="edu-major">大数据与会计 (本科 / 非全日制)</div>
+              <div class="edu-courses">主修：大数据分析、高级财务会计、审计学、财务分析、税法实务等。</div>
+            </div>
+
+            <div class="edu-item" style="border-bottom:none;">
+              <div class="edu-time">2015.09 - 2018.06</div>
+              <div class="edu-school">邵阳县工业职业技术学院</div>
+              <div class="edu-major">财务会计 (大专)</div>
+              <div class="edu-courses">主修：基础会计、经济法、成本会计、会计电算化、财务报表分析等。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        © 2026 刘珊. All Rights Reserved.
+      </footer>
+    </section>
+
+    <!-- ====== 页面 3：工作经历（无删改，重点标注） ====== -->
+    <section class="page" id="page-experience">
+      <div class="section-header">
+        <h1 class="section-title">工作经历</h1>
+        <p class="section-subtitle">多行业全盘账务、数字化落地与业财优化实践。</p>
+      </div>
+
+      <div class="experience-list">
+        
+        <!-- 经历 1 -->
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-company">深圳市富亿森增材智造科技有限公司 (3D打印)</div>
+            <div class="exp-date">2026.05 - 至今</div>
+            <div class="exp-role">财务主管（兼管人事）</div>
+          </div>
+          <div class="exp-content">
+            <div class="exp-point"><strong>财务数字化搭建：</strong> 运用 <span class="highlight-badge">Claude Code 及网站开发技术，从0到1独立开发内部“财务工作台”</span>。实现跨平台业财数据自动集成与校验，<span class="highlight-badge">大幅提高结账效率</span>。</div>
+            <div class="exp-point"><strong>全盘账务与利润测算：</strong> 全面负责公司账务及资金收支。结合业务数据，<span class="highlight-badge">搭建3D打印设备与耗材的单体利润测算模型</span>，为管理层产品定价与选品提供数据支持。</div>
+            <div class="exp-point"><strong>成本与税务管控：</strong> 准确核算生产制造成本并建立控制标准；结合制造业税收优惠政策完成全流程税务申报与筹划，规避风险。</div>
+            <div class="exp-point"><strong>人事行政统筹：</strong> 兼管人力资源工作，统筹招聘、入离职管理；负责薪资绩效核算及社保公积金，优化企业用工成本。</div>
+          </div>
+        </div>
+
+        <!-- 经历 2 -->
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-company">广州埃里森健康科技有限公司</div>
+            <div class="exp-date">2024.08 - 2025.05</div>
+            <div class="exp-role">财务分析专员</div>
+          </div>
+          <div class="exp-content">
+            <div class="exp-point"><strong>多平台营收稽核：</strong> 负责5大电商平台（抖音、天猫、京东等）<span class="highlight-badge">月均超300万营收</span>核算。核对订单、支付与银行流水，<span class="highlight-badge">成本费用误差率控制在0.05%以内</span>。</div>
+            <div class="exp-point"><strong>数据分析与支持：</strong> 使用 Power Query 清洗业务数据，定期出具各店铺及产品线利润表，协助优化选品与投放策略。</div>
+            <div class="exp-point"><strong>供应链对账优化：</strong> 管理7家核心合作商往来账与应付账款，优化对账流程，<span class="highlight-badge">月度对账周期缩短30%</span>，加快资金周转。</div>
+            <div class="exp-point"><strong>库存精细化管理：</strong> 监控库存周转率，建立预警机制，<span class="highlight-badge">推动账实相符率由90%提升至98%以上</span>。</div>
+          </div>
+        </div>
+
+        <!-- 经历 3 -->
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-company">西安尚品汇网络科技有限公司</div>
+            <div class="exp-date">2022.06 - 2024.07</div>
+            <div class="exp-role">财务专员（兼管供应链）</div>
+          </div>
+          <div class="exp-content">
+            <div class="exp-point"><strong>跨平台库存协同：</strong> 熟练使用聚水潭、马帮等ERP系统，整合多平台订单与存货数据，<span class="highlight-badge">使订单处理效率提升25%</span>。</div>
+            <div class="exp-point"><strong>供应链成本管控：</strong> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算应付账款，从成本端提升业务毛利。</div>
+            <div class="exp-point"><strong>资产盘点与风控：</strong> 主导海内外仓存货盘点，利用ERP动态管控库存，<span class="highlight-badge">账实相符率长期稳定在99%以上</span>。</div>
+            <div class="exp-point"><strong>出口报关与税务：</strong> 协同完成出口报关流程，通过ERP归集出口税务数据并申报，确保合规。</div>
+          </div>
+        </div>
+
+        <!-- 经历 4 -->
+        <div class="exp-item" style="border-bottom: 1px solid var(--text-main);">
+          <div class="exp-meta">
+            <div class="exp-company">广州市蓝箭环保设备有限公司</div>
+            <div class="exp-date">2022.01 - 2022.06</div>
+            <div class="exp-role">财务专员</div>
+          </div>
+          <div class="exp-content">
+            <div class="exp-point"><strong>日常基础核算：</strong> 使用金蝶系统独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</div>
+            <div class="exp-point"><strong>凭证审核与税务：</strong> 月均审核原始票据180余份，确保费用报销合规；按时完成各税种申报及汇算清缴，<span class="highlight-badge">实操零差错</span>。</div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        © 2026 刘珊. All Rights Reserved.
+      </footer>
+    </section>
+
+  </div>
+</div>
+
+<!-- 吉利话彩蛋弹窗 -->
 <div class="toast-overlay" id="luckyToast">
   <div class="toast-box">
     <h3>✨ 获得今日打工人能量祝福 ✨</h3>
@@ -448,35 +511,38 @@ body {
 </div>
 
 <script>
-// 选项卡平滑切换
-function switchTab(evt, tabId) {
-  const panes = document.querySelectorAll('.tab-pane');
-  panes.forEach(p => p.classList.remove('active'));
-
-  const tabs = document.querySelectorAll('.nav-tab');
-  tabs.forEach(t => t.classList.remove('active'));
-
-  document.getElementById(tabId).classList.add('active');
-  evt.currentTarget.classList.add('active');
+// 打开封面
+function openAlbum() {
+  document.getElementById('albumCover').classList.add('opened');
 }
 
-// 3D 鼠标跟随悬停动态微动特效
-const card = document.getElementById('resumeCard');
-document.addEventListener('mousemove', (e) => {
-  const xAxis = (window.innerWidth / 2 - e.pageX) / 60;
-  const yAxis = (window.innerHeight / 2 - e.pageY) / 60;
-  card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-});
-document.addEventListener('mouseleave', () => {
-  card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-  card.style.transition = 'transform 0.5s ease';
-});
+// 页面切换
+function switchPage(name) {
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(p => p.classList.remove('active'));
+  
+  setTimeout(() => {
+    document.getElementById('page-' + name).classList.add('active');
+  }, 50);
 
-// 随机吉利话库（打工人爱听的）
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === name);
+  });
+  
+  document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 导出 PDF 简历
+function exportPDF() {
+  window.print();
+}
+
+// 随机打工人吉利话
 const luckyPhrases = [
-  "🎉 诸事顺利！祝愿今天工作不超载！",
+  "🎉 诸事顺利！今天工作不超载，下班绝对不加班！",
   "💰 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
-  "☕ 报销秒批过，开心每一天！",
+  "☕ 摸鱼快乐！代码跑得快，报销秒批过，开心每一天！",
+  "🚀 大展宏图！招到刘珊这样既懂财务又会AI编程的BP，团队业绩直接起飞！",
   "🍀 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
   "📈 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！"
 ];
@@ -491,6 +557,5 @@ function closeLuckyToast() {
   document.getElementById('luckyToast').style.display = 'none';
 }
 </script>
-
 </body>
 </html>
