@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>刘珊 · 财务主管 / 财务BP | 个人数字档案</title>
+<title>刘珊 · 财务主管 / 财务BP | 个人数字档案与简历</title>
 <style>
-/* ========== 高端杂志/全屏铺满风格 (Full-bleed Editorial Style) + 浅绿色放松色调 ========== */
+/* ========== 高端杂志风格 + 浅绿色放松色调 ========== */
 :root {
-  --page-bg: #f2f7f4;        /* 纸张白/放松浅绿色基调 */
+  --page-bg: #f2f7f4;        /* 网页端放松的浅绿色基调 */
   --text-main: #111111;      /* 极黑正文 */
   --text-muted: #5c7065;     /* 高级灰绿 */
   --accent: #2e6942;         /* 稳重的森林绿强调色 */
@@ -166,12 +166,32 @@ body {
   border-radius: 2px;
 }
 
-/* ===== 概览页样式 (档案 + 核心优势) ===== */
+/* ===== 概览页样式 (档案 + 照片 + 核心优势) ===== */
 .overview-grid {
   display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start;
 }
 .profile-card {
   border-top: 1px solid var(--text-main); padding-top: 25px;
+}
+/* 照片摆放位置样式 */
+.profile-photo-box {
+  width: 100px;
+  height: 130px;
+  background: #e4edf3;
+  border: 1px dashed var(--accent);
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  overflow: hidden;
+}
+.profile-photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .profile-name { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 15px; letter-spacing: 2px; }
 .profile-details { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; }
@@ -258,12 +278,49 @@ body {
   font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
 }
 
-/* ===== 打印/PDF 专用样式 ===== */
+/* ===== 打印/PDF 专用极简专业简历排版 (重磅升级) ===== */
 @media print {
-  body { overflow: auto !important; background: #fff !important; color: #000 !important; }
+  body { 
+    overflow: auto !important; 
+    background: #fff !important; 
+    color: #111 !important; 
+    font-size: 11pt !important;
+  }
   .magazine-cover, .nav, .lucky-btn-nav, .pdf-btn-nav, .footer { display: none !important; }
-  .page { opacity: 1 !important; transform: none !important; position: static !important; pointer-events: auto !important; padding: 20px !important; display: block !important; }
-  #page-overview, #page-skills, #page-experience { display: block !important; page-break-after: always; }
+  
+  /* 让所有板块平铺展开，自动完美适配 A4 纸张排版 */
+  .page { 
+    opacity: 1 !important; 
+    transform: none !important; 
+    position: static !important; 
+    pointer-events: auto !important; 
+    padding: 10px 0 !important; 
+    display: block !important; 
+    min-height: auto !important;
+  }
+  
+  /* 打印顶部的标准结构重组：把关键信息在一页内优雅呈现 */
+  #page-overview::before {
+    content: "刘珊 · 求职意向：财务主管 / 财务BP\A手机：133-4139-8551 | 邮箱：2801701239@qq.com\A年龄：26岁 (2000.09) | 学历：大专（本科在读） | 现居：广东深圳";
+    white-space: pre;
+    display: block;
+    font-size: 11pt;
+    border-bottom: 2px solid #2e6942;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #2e6942;
+  }
+  
+  .section-header, .overview-grid > .profile-card { display: none !important; }
+  .overview-grid { display: block !important; }
+  .overview-grid > .advantages-stack { width: 100% !important; }
+  
+  /* 让打印版每部分清晰分隔 */
+  .skills-edu-layout, .experience-list { display: block !important; }
+  .block-card, .exp-item { border-top: 1px solid #ccc !important; padding: 15px 0 !important; margin-bottom: 10px !important; }
+  .exp-item { display: block !important; }
+  .exp-meta { font-weight: bold; margin-bottom: 5px; color: #2e6942; }
 }
 
 /* ===== 响应式 ===== */
@@ -306,8 +363,8 @@ body {
         <button class="nav-link active" data-page="overview" onclick="switchPage('overview')">概览</button>
         <button class="nav-link" data-page="skills" onclick="switchPage('skills')">技能与教育</button>
         <button class="nav-link" data-page="experience" onclick="switchPage('experience')">工作经历</button>
-        <button class="lucky-btn-nav" onclick="showLuckyPhrase()">🍀 转运站</button>
-        <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF</button>
+        <button class="lucky-btn-nav" onclick="showLuckyPhrase()">转运站</button>
+        <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF简历</button>
       </div>
     </div>
   </nav>
@@ -323,8 +380,12 @@ body {
       </div>
       
       <div class="overview-grid">
-        <!-- 左侧个人档案 -->
+        <!-- 左侧个人档案与照片区域 -->
         <div class="profile-card">
+          <!--  提示：照片摆放位置。若有照片可将下方文字换成 <img src="photo.jpg" alt="刘珊照片"> -->
+          <div class="profile-photo-box">
+            <span>证件照区域<br>可插入 photo.jpg</span>
+          </div>
           <h2 class="profile-name">刘 珊</h2>
           <div class="profile-details">
             <p>求职意向：<span>财务主管 / 财务BP</span></p>
@@ -472,7 +533,7 @@ body {
           </div>
           <div class="exp-content">
             <div class="exp-point"><strong>跨平台库存协同：</strong> 熟练使用聚水潭、马帮等ERP系统，整合多平台订单与存货数据，<span class="highlight-badge">使订单处理效率提升25%</span>。</div>
-            <div class="exp-point"><strong>供应链成本管控：</strong> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算应付账款，从成本端提升业务毛利。</div>
+            <div class="exp-point"><strong>供应链成本管控：</strong> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算供应商应付账款，从成本端提升业务毛利。</div>
             <div class="exp-point"><strong>资产盘点与风控：</strong> 主导海内外仓存货盘点，利用ERP动态管控库存，<span class="highlight-badge">账实相符率长期稳定在99%以上</span>。</div>
             <div class="exp-point"><strong>出口报关与税务：</strong> 协同完成出口报关流程，通过ERP归集出口税务数据并申报，确保合规。</div>
           </div>
@@ -486,7 +547,7 @@ body {
             <div class="exp-role">财务专员</div>
           </div>
           <div class="exp-content">
-            <div class="exp-point"><strong>日常基础核算：</strong> 使用金蝶系统独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</div>
+            <div class="exp-point"><strong>日常基础核算：</strong> 使用金蝶系统独立处理应收应付, 固定资产, 薪资核算及月度财务报表编制。</div>
             <div class="exp-point"><strong>凭证审核与税务：</strong> 月均审核原始票据180余份，确保费用报销合规；按时完成各税种申报及汇算清缴，<span class="highlight-badge">实操零差错</span>。</div>
           </div>
         </div>
@@ -539,11 +600,11 @@ function exportPDF() {
 
 // 随机打工人吉利话
 const luckyPhrases = [
-  "诸事顺利！今天工作不超载,
-  "财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
+  " 诸事顺利！今天工作不超载！",
+  " 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
   "报销秒批过，开心每一天！",
   " 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
-  " 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！"
+  "薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！"
 ];
 
 function showLuckyPhrase() {
