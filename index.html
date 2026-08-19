@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>刘珊 - 个人简历</title>
+    <style>
+        :root {
+            --header-bg: #0F172A;
+            --sidebar-bg: #F8FAFC;
+            --main-bg: #FFFFFF;
+            --primary-orange: #EA580C;
+            --text-main: #333333;
+            --text-light: #64748b;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+            background-color: #e5e7eb;
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .resume-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 顶部 Header */
+        .header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 35px 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-info h1 { font-size: 38px; margin-bottom: 8px; letter-spacing: 2px; }
+        .header-info p { font-size: 16px; color: #bae6fd; font-weight: 500; letter-spacing: 1px; }
+        .photo-container {
+            width: 95px; height: 125px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 6px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: rgba(255, 255, 255, 0.7); font-size: 12px; text-align: center;
+        }
+
+        /* 主体布局 */
+        .content { display: flex; flex: 1; }
+        
+        /* 左侧栏 */
+        .sidebar { width: 32%; background-color: var(--sidebar-bg); padding: 35px 25px 35px 45px; border-right: 1px solid #e2e8f0; }
+        .sidebar-section { margin-bottom: 35px; }
+        .section-title-left { font-size: 18px; color: var(--header-bg); font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid var(--header-bg); padding-bottom: 4px; display: inline-block; }
+        .sidebar p { font-size: 13.5px; margin-bottom: 8px; color: #475569; }
+        .sidebar .bold-text { font-weight: bold; color: var(--header-bg); margin-top: 5px; }
+
+        /* 右侧主区 */
+        .main { width: 68%; background-color: var(--main-bg); padding: 35px 45px 35px 35px; }
+        .section-title-right { font-size: 20px; color: var(--header-bg); font-weight: bold; margin-bottom: 18px; border-bottom: 2px solid var(--header-bg); padding-bottom: 5px; }
+        
+        .advantage-item { font-size: 14px; margin-bottom: 12px; text-align: justify; line-height: 1.7; }
+        .advantage-item span.star { color: var(--primary-orange); font-weight: bold; margin-right: 6px; font-size: 16px; }
+        .advantage-item span.title { font-weight: bold; color: var(--text-main); }
+
+        .job-item { margin-bottom: 25px; margin-top: 18px; }
+        .job-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .company-name { font-size: 16px; font-weight: bold; color: var(--header-bg); }
+        .job-date { font-size: 13.5px; color: var(--text-light); font-weight: 500; }
+        .job-title { font-size: 14.5px; color: var(--primary-orange); font-weight: bold; margin-bottom: 10px; }
+        .job-desc { font-size: 14px; margin-bottom: 8px; padding-left: 18px; position: relative; text-align: justify; line-height: 1.7; }
+        .job-desc::before { content: "▸"; position: absolute; left: 0; color: var(--header-bg); font-weight: bold; font-size: 16px; }
+
+        /* 悬浮控制面板 (纯CSS+JS交互，打印时自动隐藏) */
+        .action-panel {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .action-btn {
+            background-color: var(--header-bg);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .action-btn:hover { background-color: var(--primary-orange); }
+
+        /* 打印样式优化：确保导出PDF时排版完美 */
+        @media print {
+            body { background-color: white; padding: 0; }
+            .resume-wrapper { box-shadow: none; margin: 0; width: 100%; }
+            .action-panel { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- JS交互：悬浮操作面板 -->
+<div class="action-panel" id="actionPanel">
+    <button class="action-btn" onclick="window.print()">🖨️ 导出高清 PDF</button>
+</div>
+
+<div class="resume-wrapper" id="resumeNode">
+    <header class="header">
+        <div class="header-info">
+            <h1>刘 珊</h1>
+            <p>财务 BP・财务分析・财务数字化运营</p>
+        </div>
+        <!-- 照片替换区：如果是 Base64 编码，直接把 <img> 标签贴在下面替换整个 <div> -->
+        <div class="photo-container">
+            <span style="font-size: 24px; margin-bottom: 4px;">📷</span>
+            证件照位置
+        </div>
+    </header>
+
+    <div class="content">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title-left">求职意向</div>
+                <p>目标岗位：财务主管 / 财务BP</p>
+            </div>
+            <div class="sidebar-section">
+                <div class="section-title-left">个人信息</div>
+                <p>年龄：26岁 (2000.09)</p>
+                <p>现居：广东深圳</p>
+            </div>
+            <div class="sidebar-section">
+                <div class="section-title-left">联系方式</div>
+                <p>手机：133-4139-8551</p>
+                <p>邮箱：2801701239@qq.com</p>
+            </div>
+            <div class="sidebar-section">
+                <div class="section-title-left">教育背景</div>
+                <p class="bold-text">广东外语外贸大学</p>
+                <p>2025.09 - 2028.06</p>
+                <p>大数据与会计 | 本科(在读)</p>
+                <br>
+                <p class="bold-text">邵阳县工业职业技术学院</p>
+                <p>2015.09 - 2018.06</p>
+                <p>财务会计 | 大专</p>
+            </div>
+            <div class="sidebar-section">
+                <div class="section-title-left">专业技能</div>
+                <p>• 资质证书：初级会计职称</p>
+                <p>• 财务系统：金蝶、聚水潭、马帮、店小秘等ERP</p>
+                <p>• 数据分析：Power BI、Power Query、SQL</p>
+                <p>• 数字化开发：GitHub Copilot(AI编程)、前端</p>
+                <p>• 业务领域：制造业/多平台电商核算、税务筹划、单体利润测算</p>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="section-title-right">核心优势</div>
+            <div class="advantage-item">
+                <span class="star">★</span><span class="title">业财融合与利润测算：</span>精通制造业及跨境/国内电商财务核算规则，能独立搭建单体盈利测算模型，为管理层选品、定价及营销投放提供直观数据支持。
+            </div>
+            <div class="advantage-item">
+                <span class="star">★</span><span class="title">财务数字化与工具开发：</span>熟练运用 GitHub Copilot 等 AI 编程及前端技术，独立搭建“内部财务工作台”，结合 Power BI/SQL 实现跨平台数据集成，提升结账与对账效率。
+            </div>
+            <div class="advantage-item">
+                <span class="star">★</span><span class="title">供应链协同与成本管控：</span>精通多平台 ERP 系统，擅长采购、物流成本监控与优化。有效建立库存预警与动态盘点机制，推动账实相符率长期稳定在 98% 以上。
+            </div>
+            <div class="advantage-item">
+                <span class="star">★</span><span class="title">全盘账务与合规风控：</span>具备扎实财务与税务底盘。独立负责多平台营收稽核、往来账对账、成本核算，结合税收优惠政策完成全流程合规申报，实操零差错。
+            </div>
+
+            <div class="section-title-right" style="margin-top: 30px;">工作经历</div>
+            <div class="job-item">
+                <div class="job-header">
+                    <span class="company-name">深圳市富亿森增材智造科技有限公司 (3D打印)</span>
+                    <span class="job-date">2026.05 - 至今</span>
+                </div>
+                <div class="job-title">财务主管（兼管人事）</div>
+                <div class="job-desc"><strong>财务数字化搭建：</strong>运用 GitHub Copilot 及网站开发技术开发内部“财务工作台”。实现跨平台业财数据的自动集成与校验，大幅提升结账效率。</div>
+                <div class="job-desc"><strong>全盘账务与利润测算：</strong>全面负责资金收支，搭建 3D 打印设备与耗材单体利润测算模型，为选品提供数据支持。</div>
+                <div class="job-desc"><strong>成本与税务管控：</strong>准确核算制造成本并建立控制标准；结合税收政策完成税务筹划，规避风险。</div>
+                <div class="job-desc"><strong>人事行政统筹：</strong>兼管入离职及薪酬绩效，将财务视角引入人事管理优化用工成本。</div>
+            </div>
+
+            <div class="job-item">
+                <div class="job-header">
+                    <span class="company-name">广州埃里森健康科技有限公司</span>
+                    <span class="job-date">2024.08 - 2025.05</span>
+                </div>
+                <div class="job-title">财务分析专员</div>
+                <div class="job-desc"><strong>多平台营收稽核：</strong>负责抖音、天猫等平台超300万营收核算，成本费用误差率控制在0.05%内。</div>
+                <div class="job-desc"><strong>数据分析与支持：</strong>使用 Power Query 出具利润表，协助优化选品与投放策略。</div>
+                <div class="job-desc"><strong>供应链对账优化：</strong>管理7家核心合作商往来账，月度对账周期缩短30%，加快周转。</div>
+                <div class="job-desc"><strong>库存精细化管理：</strong>监控周转率，账实相符率提升至98%以上。</div>
+            </div>
+
+            <div class="job-item">
+                <div class="job-header">
+                    <span class="company-name">西安尚品汇网络科技有限公司</span>
+                    <span class="job-date">2022.06 - 2024.07</span>
+                </div>
+                <div class="job-title">财务专员（兼管供应链）</div>
+                <div class="job-desc"><strong>跨平台库存协同：</strong>使用聚水潭等 ERP，实现多平台库存同步，处理效率提升25%。</div>
+                <div class="job-desc"><strong>供应链成本管控：</strong>搭建成本监控模型，核算应付账款，从成本端提升毛利。</div>
+                <div class="job-desc"><strong>出口报关与合规：</strong>归集出口税务数据并申报，确保出海业务合规。</div>
+            </div>
+            
+            <div class="job-item" style="margin-bottom: 0;">
+                <div class="job-header">
+                    <span class="company-name">广州市蓝箭环保设备有限公司</span>
+                    <span class="job-date">2022.01 - 2022.06</span>
+                </div>
+                <div class="job-title">财务专员</div>
+                <div class="job-desc"><strong>基础核算与报表：</strong>使用金蝶独立处理全盘账务及报表编制。</div>
+                <div class="job-desc"><strong>凭证审核与税务：</strong>月均审核票据180余份；按时完成各税种申报，实操零差错。</div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- 页面底部脚本区 -->
+<script>
+    console.log("简历加载完毕。");
+</script>
+</body>
+</html>
