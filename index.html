@@ -13,7 +13,6 @@
   --accent: #c41e1e;         /* 经典编辑红 */
   --line-color: #dddddd;     /* 极细边框线 */
   
-  /* 字体设置：标题用衬线体，正文用无衬线体 */
   --font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
   --font-sans: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
 }
@@ -26,7 +25,7 @@ body {
   background: var(--page-bg);
   line-height: 1.6;
   min-height: 100vh;
-  overflow: hidden; /* 网页端锁定单屏，杂志质感 */
+  overflow: hidden;
   perspective: 2500px;
 }
 
@@ -221,7 +220,7 @@ body {
   font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
 }
 
-/* ===== 打印/PDF 专用样式 ===== *
+/* ===== 打印/PDF 专用样式 ===== */
 @media print {
   body { overflow: auto !important; background: #fff !important; color: #000 !important; }
   .magazine-cover, .nav, .pdf-btn-nav, .footer { display: none !important; }
@@ -298,7 +297,7 @@ body {
           </div>
         </div>
 
-        <!-- 右侧核心优势（完整保留无删改） -->
+        <!-- 右侧核心优势 -->
         <div class="advantages-stack">
           <div class="sec-mini-title" style="font-family:var(--font-serif); font-size:1.2rem; margin-bottom:5px; letter-spacing:1px;">核心竞争力</div>
           
@@ -354,7 +353,7 @@ body {
 
             <div class="skill-group">
               <div class="skill-group-name">系统与平台</div>
-              <div class="skill-group-desc">精通金蝶财务软件，以及聚水潭、马帮、店小秘等供应链ERP。熟悉国内及跨境电商（亚马逊、TikTok、抖音、天猫等）的财务核算规则。</div>
+              <div class="skill-group-desc">精通金蝶财务软件，以及聚水潭、马帮、店小秘等供应链ERP。熟悉国内及跨境电商（亚马逊, TikTok, 抖音, 天猫等）的财务核算规则。</div>
             </div>
           </div>
         </div>
@@ -464,12 +463,12 @@ body {
 </div>
 
 <script>
-// 打开相册/档案封面
+// 打开封面
 function openAlbum() {
   document.getElementById('albumCover').classList.add('opened');
 }
 
-// 3D 页面平滑切换
+// 页面切换
 function switchPage(name) {
   const pages = document.querySelectorAll('.page');
   pages.forEach(p => p.classList.remove('active'));
@@ -485,7 +484,7 @@ function switchPage(name) {
   document.getElementById('pageContainer').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 一键导出PDF简历
+// 导出 PDF 简历
 function exportPDF() {
   window.print();
 }
