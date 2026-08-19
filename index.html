@@ -3,52 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刘珊 - 个人简历网站</title>
+    <title>刘珊 - 个人数字简历 (PPT演示模式)</title>
     <style>
         :root {
-            --primary-color: #1E3A8A; /* 深蓝色 */
-            --accent-color: #EA580C; /* 活力橙 */
-            --bg-light: #F8FAFC;
-            --bg-white: #FFFFFF;
+            --primary-bg: #0F172A;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --accent-orange: #EA580C;
             --text-dark: #1E293B;
-            --text-gray: #64748B;
+            --text-light: #F8FAFC;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        body {
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--primary-bg);
             color: var(--text-dark);
-            line-height: 1.6;
-            background-color: var(--bg-light);
-            overflow-x: hidden;
         }
 
         /* 顶部导航栏 */
         .navbar {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 50px;
+            padding: 20px 50px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
             z-index: 1000;
-            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .navbar .logo {
+        .logo {
             font-size: 20px;
             font-weight: bold;
-            color: var(--primary-color);
+            color: #fff;
             text-decoration: none;
+            letter-spacing: 1px;
         }
 
         .nav-links {
@@ -56,460 +57,353 @@
             gap: 25px;
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dark);
+        .nav-links button {
+            background: none;
+            border: none;
+            color: #94a3b8;
             font-size: 15px;
             font-weight: 500;
+            cursor: pointer;
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--accent-color);
+        .nav-links button:hover, .nav-links button.active {
+            color: var(--accent-orange);
         }
 
-        /* 首屏 Hero 区 */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
+        /* PPT 幻灯片容器 */
+        .slides-container {
+            width: 100%;
+            height: 100%;
             position: relative;
-            padding: 0 20px;
         }
 
-        /* 动态背景修饰 */
-        .hero::before {
-            content: '';
+        .slide {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url('https://www.transparenttextures.com/patterns/cubes.png');
-            opacity: 0.1;
-            z-index: 1;
-        }
-
-        .hero-content {
-            z-index: 2;
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.2);
-            margin-bottom: 20px;
-            object-fit: cover;
-            background-color: #cbd5e1;
-            display: inline-flex;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: center;
-            color: #475569;
-            font-size: 14px;
+            padding: 100px 50px 60px 50px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: translateY(30px);
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
 
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
-        .hero p.title {
-            font-size: 20px;
-            color: #bae6fd;
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        .contact-pills {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .pill {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* 通用区块设置 */
-        .section {
-            padding: 100px 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
+        /* 幻灯片内部卡片排版 */
+        .slide-content {
             width: 100%;
             max-width: 1000px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .section-title {
-            font-size: 32px;
-            color: var(--primary-color);
+        .slide-title {
+            font-size: 28px;
+            color: var(--primary-bg);
+            margin-bottom: 25px;
+            border-left: 6px solid var(--accent-orange);
+            padding-left: 15px;
+        }
+
+        /* 第一页（封面页）特殊样式 */
+        .slide.hero-slide .hero-box {
             text-align: center;
-            margin-bottom: 50px;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 60px;
-            height: 4px;
-            background: var(--accent-color);
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        /* 交替背景色 */
-        .bg-white { background-color: var(--bg-white); }
-        .bg-light { background-color: var(--bg-light); }
-
-        /* 卡片样式 */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* 核心优势网格 */
-        .advantages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 25px;
-        }
-
-        .adv-card {
-            border-top: 4px solid var(--primary-color);
-        }
-
-        .adv-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-dark);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .adv-title span {
-            color: var(--accent-color);
-            font-size: 24px;
-            margin-right: 10px;
-        }
-
-        /* 工作经历时间轴 */
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-            border-left: 2px solid #e2e8f0;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            left: -39px;
-            top: 5px;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--accent-color);
-        }
-
-        .job-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-            flex-wrap: wrap;
-        }
-
-        .company { font-size: 20px; font-weight: bold; color: var(--primary-color); }
-        .duration { color: var(--text-gray); font-size: 14px; background: var(--bg-light); padding: 4px 10px; border-radius: 15px;}
-        .job-title { font-size: 16px; color: var(--accent-color); font-weight: bold; margin-bottom: 15px; }
-
-        .job-detail {
-            margin-bottom: 8px;
-            font-size: 15px;
-            color: #475569;
-        }
-        .job-detail strong { color: var(--text-dark); }
-
-        /* 两栏布局 (个人信息 & 技能) */
-        .info-skills-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .tag {
-            background: #e0f2fe;
-            color: #0284c7;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* 页脚 */
-        footer {
-            background: var(--text-dark);
             color: white;
-            text-align: center;
-            padding: 30px 20px;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-orange);
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            color: #94a3b8;
             font-size: 14px;
         }
+        .hero-box h1 { font-size: 42px; margin-bottom: 10px; letter-spacing: 2px; }
+        .hero-box p { font-size: 18px; color: #38bdf8; margin-bottom: 25px; }
 
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .navbar { padding: 15px 20px; }
-            .nav-links { display: none; } /* 移动端精简导航 */
-            .hero h1 { font-size: 36px; }
-            .info-skills-grid { grid-template-columns: 1fr; }
-            .advantages-grid { grid-template-columns: 1fr; }
-            .job-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+        /* 网格与列表 */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .sub-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-bg);
+        }
+        .sub-card h4 { color: var(--primary-bg); margin-bottom: 8px; font-size: 16px; }
+        .sub-card p { color: #475569; font-size: 14px; line-height: 1.5; }
+
+        .tag {
+            background: #e0f2fe; color: #0284c7; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; display: inline-block; margin: 3px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 翻页控制按钮 */
+        .slide-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .ctrl-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+            transition: background 0.3s;
+        }
+        .ctrl-btn:hover { background: var(--accent-orange); border-color: var(--accent-orange); }
+
+        /* 右侧圆点指示器 */
+        .dots-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot.active {
+            background: var(--accent-orange);
+            transform: scale(1.3);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-links { display: none; }
+            .grid-2, .grid-4 { grid-template-columns: 1fr; }
+            .slide { padding: 80px 20px 40px 20px; }
+            .slide-content { padding: 20px; }
+            .dots-indicator { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 导航栏 -->
+    <!-- 顶部导航 -->
     <nav class="navbar">
-        <a href="#hero" class="logo">Liu Shan.</a>
+        <a href="#" class="logo">Liu Shan. PPT Presentation</a>
         <div class="nav-links">
-            <a href="#about">关于我</a>
-            <a href="#advantages">核心优势</a>
-            <a href="#experience">工作经历</a>
-            <a href="#education">教育背景</a>
+            <button onclick="goToSlide(0)" class="nav-btn active" data-index="0">01 封面</button>
+            <button onclick="goToSlide(1)" class="nav-btn" data-index="1">02 个人与技能</button>
+            <button onclick="goToSlide(2)" class="nav-btn" data-index="2">03 核心优势</button>
+            <button onclick="goToSlide(3)" class="nav-btn" data-index="3">04 工作经历</button>
+            <button onclick="goToSlide(4)" class="nav-btn" data-index="4">05 教育背景</button>
         </div>
     </nav>
 
-    <!-- 首屏区域 -->
-    <section id="hero" class="hero">
-        <div class="hero-content">
-            <!-- 头像位置，如果你有照片，将这里替换为 <img src="你的照片.jpg" class="avatar" alt="头像"> -->
-            <div class="avatar">放入照片</div>
-            <h1>刘 珊</h1>
-            <p class="title">财务 BP | 财务分析 | 财务数字化运营</p>
-            <div class="contact-pills">
-                <span class="pill">📍 广东深圳</span>
-                <span class="pill">🎂 26岁 (2000.09)</span>
-                <span class="pill">📱 133-4139-8551</span>
-                <span class="pill">✉️ 2801701239@qq.com</span>
+    <!-- 右侧圆点跳转 -->
+    <div class="dots-indicator">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+        <div class="dot" onclick="goToSlide(3)"></div>
+        <div class="dot" onclick="goToSlide(4)"></div>
+    </div>
+
+    <!-- 幻灯片主体 -->
+    <div class="slides-container">
+
+        <!-- 第 1 页：封面 -->
+        <div class="slide hero-slide active" data-slide="0">
+            <div class="hero-box">
+                <div class="avatar">照片区域</div>
+                <h1>刘 珊</h1>
+                <p>财务 BP ｜ 财务分析 ｜ 财务数字化运营</p>
+                <button class="ctrl-btn" onclick="nextSlide()" style="background: var(--accent-orange); border: none;">开始演示 &rarr;</button>
             </div>
         </div>
-    </section>
 
-    <!-- 关于我与专业技能 -->
-    <section id="about" class="section bg-white">
-        <div class="container">
-            <h2 class="section-title">基本信息与技能</h2>
-            <div class="info-skills-grid">
-                <!-- 左侧基本信息 -->
-                <div class="card">
-                    <h3 style="margin-bottom: 15px; color: var(--primary-color);">求职意向</h3>
-                    <p><strong>目标岗位：</strong>财务主管 / 财务BP</p>
-                    <p style="margin-top: 10px;">具备扎实的财务与税务底盘，擅长业财融合，能独立全盘负责多平台营收稽核与成本核算，致力于通过数字化手段赋能业务发展。</p>
-                </div>
-                
-                <!-- 右侧技能标签 -->
-                <div class="card">
-                    <h3 style="margin-bottom: 15px; color: var(--primary-color);">专业技能雷达</h3>
-                    <div style="margin-bottom: 15px;">
-                        <p style="font-size: 14px; font-weight: bold;">资质与系统：</p>
-                        <div class="skill-tags">
-                            <span class="tag">初级会计职称</span>
-                            <span class="tag">金蝶系统</span>
-                            <span class="tag">聚水潭</span>
-                            <span class="tag">马帮 ERP</span>
-                            <span class="tag">店小秘</span>
-                        </div>
+        <!-- 第 2 页：个人与技能 -->
+        <div class="slide" data-slide="1">
+            <div class="slide-content">
+                <h2 class="slide-title">02. 个人信息与专业技能</h2>
+                <div class="grid-2">
+                    <div class="sub-card">
+                        <h4>求职意向与档案</h4>
+                        <p><strong>目标岗位：</strong>财务主管 / 财务BP</p>
+                        <p><strong>年龄/现居：</strong>26岁 ｜ 广东深圳</p>
+                        <p><strong>联系电话：</strong>133-4139-8551</p>
+                        <p><strong>电子邮箱：</strong>2801701239@qq.com</p>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <p style="font-size: 14px; font-weight: bold;">数据与数字化工具：</p>
-                        <div class="skill-tags" style="background: #fff7ed;">
-                            <span class="tag" style="background:#fdba74; color:#9a3412;">Power BI</span>
-                            <span class="tag" style="background:#fdba74; color:#9a3412;">Power Query</span>
-                            <span class="tag" style="background:#fdba74; color:#9a3412;">SQL</span>
-                            <span class="tag" style="background:#fdba74; color:#9a3412;">GitHub Copilot</span>
-                            <span class="tag" style="background:#fdba74; color:#9a3412;">前端开发</span>
+                    <div class="sub-card">
+                        <h4>技能矩阵</h4>
+                        <p><strong>资质系统：</strong>初级会计职称、金蝶、聚水潭、马帮 ERP、店小秘</p>
+                        <div style="margin-top: 8px;">
+                            <span class="tag">Power BI</span>
+                            <span class="tag">Power Query</span>
+                            <span class="tag">SQL</span>
+                            <span class="tag">GitHub Copilot</span>
+                            <span class="tag">前端开发</span>
                         </div>
-                    </div>
-                    <div>
-                        <p style="font-size: 14px; font-weight: bold;">核心业务领域：</p>
-                        <p style="font-size: 14px; color: #475569; margin-top: 5px;">制造业及跨境/国内多平台电商核算、税务筹划、单体利润测算、内控流程搭建。</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- 核心优势 -->
-    <section id="advantages" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">核心优势</h2>
-            <div class="advantages-grid">
-                <div class="card adv-card">
-                    <div class="adv-title"><span>★</span> 业财融合与利润测算</div>
-                    <p style="color: #475569; font-size: 15px;">精通制造业及跨境/国内电商（亚马逊、抖音等）财务核算规则，能独立搭建单体盈利测算模型，为管理层选品、定价及营销投放提供直观数据支持。</p>
-                </div>
-                <div class="card adv-card">
-                    <div class="adv-title"><span>★</span> 财务数字化与工具开发</div>
-                    <p style="color: #475569; font-size: 15px;">熟练运用 GitHub Copilot 等 AI 编程及前端技术，具备从0到1独立搭建“内部财务工作台”的能力，结合 Power BI/SQL 实现跨平台数据自动集成，大幅提升结账与对账效率。</p>
-                </div>
-                <div class="card adv-card">
-                    <div class="adv-title"><span>★</span> 供应链协同与成本管控</div>
-                    <p style="color: #475569; font-size: 15px;">精通多平台 ERP 系统，擅长采购、物流成本监控与优化。有效建立库存预警与动态盘点机制，推动账实相符率长期稳定在 98% 以上。</p>
-                </div>
-                <div class="card adv-card">
-                    <div class="adv-title"><span>★</span> 全盘账务与合规风控</div>
-                    <p style="color: #475569; font-size: 15px;">具备扎实的财务与税务底盘。能独立全盘负责多平台营收稽核、往来账对账、成本核算，并结合税收优惠政策完成全流程合规申报，实操零差错。</p>
+        <!-- 第 3 页：核心优势 -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <h2 class="slide-title">03. 核心竞争优势</h2>
+                <div class="grid-4">
+                    <div class="sub-card">
+                        <h4>★ 业财融合与利润测算</h4>
+                        <p>精通制造业及跨境/国内电商财务核算，独立搭建单体盈利测算模型，为选品、定价及投放提供直观数据支持。</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>★ 财务数字化与工具开发</h4>
+                        <p>熟练运用 AI 编程及前端技术，从0到1独立搭建“内部财务工作台”，结合 Power BI/SQL 实现跨平台数据集成。</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>★ 供应链协同与成本管控</h4>
+                        <p>精通多平台 ERP，擅长采购、物流成本监控与优化，建立库存预警与动态盘点机制，账实相符率长期稳定在 98% 以上。</p>
+                    </div>
+                    <div class="sub-card">
+                        <h4>★ 全盘账务与合规风控</h4>
+                        <p>独立负责多平台营收稽核、往来账对账、成本核算，结合税收优惠政策完成全流程合规申报，实操零差错。</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- 工作经历 -->
-    <section id="experience" class="section bg-white">
-        <div class="container">
-            <h2 class="section-title">工作经历</h2>
-            <div class="timeline">
-                
-                <!-- 经历 1 -->
-                <div class="timeline-item">
-                    <div class="card">
-                        <div class="job-header">
-                            <div class="company">深圳市富亿森增材智造科技有限公司 (3D打印)</div>
-                            <div class="duration">2026.05 - 至今</div>
+        <!-- 第 4 页：工作经历 -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <h2 class="slide-title">04. 工作经历</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="sub-card" style="border-left-color: var(--accent-orange);">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>深圳市富亿森增材智造科技有限公司 (3D打印)</strong>
+                            <span style="font-size:13px; color:#64748b;">2026.05 - 至今 | 财务主管</span>
                         </div>
-                        <div class="job-title">财务主管（兼管人事）</div>
-                        <div class="job-detail"><strong>▸ 财务数字化搭建：</strong>运用 GitHub Copilot 及网站开发技术，从0到1独立开发内部“财务工作台”。实现跨平台业财数据的自动集成与校验，减少线下手工录账环节，结账效率大幅提升。</div>
-                        <div class="job-detail"><strong>▸ 全盘账务与利润测算：</strong>全面负责账务及资金收支。结合业务数据搭建 3D 打印设备与耗材单体利润测算模型，为产品定价与选品提供数据支持。</div>
-                        <div class="job-detail"><strong>▸ 成本与税务管控：</strong>准确核算制造成本并建立控制标准；结合制造业税收政策完成税务申报与筹划，规避经营风险。</div>
-                        <div class="job-detail"><strong>▸ 人事行政统筹：</strong>兼管招聘及入离职管理，负责薪资绩效核算及社保公积金缴纳，将财务视角引入人事管理优化用工成本。</div>
+                        <p style="margin-top:5px;"><strong>▸ 数字化搭建：</strong>运用 AI 编程从0到1开发内部“财务工作台”，实现业财数据自动集成与校验，大幅提升结账效率。</p>
+                        <p><strong>▸ 利润测算与税务：</strong>搭建设备与耗材单体利润测算模型；完成全流程制造业税务申报与筹划，规避经营风险。</p>
                     </div>
-                </div>
-
-                <!-- 经历 2 -->
-                <div class="timeline-item">
-                    <div class="card">
-                        <div class="job-header">
-                            <div class="company">广州埃里森健康科技有限公司</div>
-                            <div class="duration">2024.08 - 2025.05</div>
+                    <div class="sub-card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>广州埃里森健康科技有限公司</strong>
+                            <span style="font-size:13px; color:#64748b;">2024.08 - 2025.05 | 财务分析专员</span>
                         </div>
-                        <div class="job-title">财务分析专员</div>
-                        <div class="job-detail"><strong>▸ 多平台营收稽核：</strong>负责抖音、天猫等5大平台月均超300万营收核算。核对CRM订单、第三方支付与银行流水，成本费用误差率控制在0.05%内。</div>
-                        <div class="job-detail"><strong>▸ 数据分析与支持：</strong>使用 Power Query 清洗数据，定期出具各店铺及产品线利润表，协助优化选品与投放策略。</div>
-                        <div class="job-detail"><strong>▸ 供应链对账优化：</strong>管理7家核心合作商往来账，优化对账流程，月度对账周期缩短30%，加快资金周转。</div>
-                        <div class="job-detail"><strong>▸ 库存精细化管理：</strong>监控周转率，建立预警机制，推动账实相符率提升至98%以上。</div>
+                        <p style="margin-top:5px;"><strong>▸ 营收稽核：</strong>负责5大平台月均超300万营收核算，成本费用误差率控制在0.05%以内；优化供应商对账，缩短周期30%。</p>
                     </div>
-                </div>
-
-                <!-- 经历 3 -->
-                <div class="timeline-item">
-                    <div class="card">
-                        <div class="job-header">
-                            <div class="company">西安尚品汇网络科技有限公司</div>
-                            <div class="duration">2022.06 - 2024.07</div>
-                        </div>
-                        <div class="job-title">财务专员（兼管供应链）</div>
-                        <div class="job-detail"><strong>▸ 跨平台库存协同：</strong>熟练使用聚水潭、马帮等 ERP，整合速卖通、亚马逊等平台存货数据。实现多平台库存同步，订单处理效率提升25%。</div>
-                        <div class="job-detail"><strong>▸ 供应链成本管控：</strong>搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算应付账款，从成本端提升毛利。</div>
-                        <div class="job-detail"><strong>▸ 资产盘点与风控：</strong>主导海内外仓存货盘点，利用 ERP 动态管控库存，账实相符率长期稳定在99%以上。</div>
-                        <div class="job-detail"><strong>▸ 出口报关与合规：</strong>协同完成出口报关，通过 ERP 归集出口税务数据并申报，确保出海业务合规。</div>
-                    </div>
-                </div>
-
-                <!-- 经历 4 -->
-                <div class="timeline-item">
-                    <div class="card">
-                        <div class="job-header">
-                            <div class="company">广州市蓝箭环保设备有限公司</div>
-                            <div class="duration">2022.01 - 2022.06</div>
-                        </div>
-                        <div class="job-title">财务专员</div>
-                        <div class="job-detail"><strong>▸ 基础核算与报表：</strong>使用金蝶独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</div>
-                        <div class="job-detail"><strong>▸ 凭证审核与税务：</strong>月均审核票据180余份确保合规；按时完成各税种申报及汇算清缴，实操零差错。</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- 教育背景 -->
-    <section id="education" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">教育背景</h2>
-            <div class="info-skills-grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="card" style="text-align: center; border-bottom: 4px solid var(--primary-color);">
-                    <div style="font-size: 30px; margin-bottom: 10px;">🎓</div>
-                    <h3 style="color: var(--primary-color); margin-bottom: 5px;">广东外语外贸大学</h3>
-                    <p style="color: var(--accent-color); font-weight: bold; margin-bottom: 10px;">大数据与会计 | 本科(在读)</p>
-                    <p style="color: var(--text-gray); font-size: 14px;">2025.09 - 2028.06</p>
-                </div>
-                <div class="card" style="text-align: center; border-bottom: 4px solid var(--primary-color);">
-                    <div style="font-size: 30px; margin-bottom: 10px;">🏫</div>
-                    <h3 style="color: var(--primary-color); margin-bottom: 5px;">邵阳县工业职业技术学院</h3>
-                    <p style="color: var(--accent-color); font-weight: bold; margin-bottom: 10px;">财务会计 | 大专</p>
-                    <p style="color: var(--text-gray); font-size: 14px;">2015.09 - 2018.06</p>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- 页脚 -->
-    <footer>
-        <p>© 2026 刘珊. All Rights Reserved.</p>
-        <p style="font-size: 12px; margin-top: 5px; color: #94a3b8;">财务 BP | 财务数字化运营 | 商业数据分析</p>
-    </footer>
+        <!-- 第 5 页：教育背景 -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <h2 class="slide-title">05. 教育背景</h2>
+                <div class="grid-2">
+                    <div class="sub-card" style="text-align: center; padding: 30px;">
+                        <h3 style="color: var(--primary-bg); margin-bottom: 5px;">广东外语外贸大学</h3>
+                        <p style="color: var(--accent-orange); font-weight: bold; margin-bottom: 10px;">大数据与会计 | 本科(在读)</p>
+                        <p style="color: #64748b; font-size: 14px;">2025.09 - 2028.06</p>
+                    </div>
+                    <div class="sub-card" style="text-align: center; padding: 30px;">
+                        <h3 style="color: var(--primary-bg); margin-bottom: 5px;">邵阳县工业职业技术学院</h3>
+                        <p style="color: var(--accent-orange); font-weight: bold; margin-bottom: 10px;">财务会计 | 大专</p>
+                        <p style="color: #64748b; font-size: 14px;">2015.09 - 2018.06</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- 平滑滚动脚本 -->
+    </div>
+
+    <!-- 底部控制按钮 -->
+    <div class="slide-controls">
+        <button class="ctrl-btn" onclick="prevSlide()">&larr; 上一页</button>
+        <button class="ctrl-btn" onclick="nextSlide()">下一页 &rarr;</button>
+    </div>
+
+    <!-- 切换幻灯片的核心控制脚本 -->
     <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const totalSlides = slides.length;
+
+        function updateSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+            currentSlide = index;
+
+            // 切换幻灯片显隐
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentSlide);
             });
+
+            // 切换右侧圆点状态
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+
+            // 切换顶部导航状态
+            navBtns.forEach((btn, i) => {
+                btn.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            updateSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            updateSlide(currentSlide - 1);
+        }
+
+        function goToSlide(index) {
+            updateSlide(index);
+        }
+
+        // 支持键盘方向键切换 PPT
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                prevSlide();
+            }
         });
     </script>
 </body>
