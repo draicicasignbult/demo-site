@@ -273,42 +273,54 @@ body {
   font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
 }
 
-/* ===== 打印/PDF 专用极简专业简历排版 ===== */
+/* ===== 打印/PDF 专用完美全展开排版 (重磅修复) ===== */
 @media print {
   body { 
-    overflow: auto !important; 
+    overflow: visible !important; 
     background: #fff !important; 
     color: #111 !important; 
-    font-size: 11pt !important;
+    font-size: 10pt !important;
   }
   .magazine-cover, .nav, .lucky-tip-badge, .pdf-btn-nav, .footer { display: none !important; }
+  
+  /* 解除网页单页锁死，让所有板块无缝依次平铺 */
+  .page-container {
+    position: static !important;
+    overflow: visible !important;
+    padding-top: 0 !important;
+    display: block !important;
+  }
+  
   .page { 
     opacity: 1 !important; 
     transform: none !important; 
     position: static !important; 
     pointer-events: auto !important; 
-    padding: 10px 0 !important; 
+    padding: 20px 0 !important; 
     display: block !important; 
     min-height: auto !important;
+    page-break-after: always; /* 自动按页面分页 */
   }
-  #page-overview::before {
-    content: "刘珊 · 求职意向：财务主管 / 财务BP\A手机：133-4139-8551 | 邮箱：2801701239@qq.com\A年龄：26岁 (2000.09) | 学历：大专（本科在读） | 现居：广东深圳";
-    white-space: pre;
-    display: block;
-    font-size: 11pt;
-    border-bottom: 2px solid #2e6942;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #2e6942;
+
+  /* 打印时使布局更美观紧凑 */
+  .overview-grid, .skills-edu-layout {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 30px !important;
   }
-  .section-header, .overview-grid > .profile-card { display: none !important; }
-  .overview-grid { display: block !important; }
-  .overview-grid > .advantages-stack { width: 100% !important; }
-  .skills-edu-layout, .experience-list { display: block !important; }
-  .block-card, .exp-item { border-top: 1px solid #ccc !important; padding: 15px 0 !important; margin-bottom: 10px !important; }
-  .exp-item { display: block !important; }
-  .exp-meta { font-weight: bold; margin-bottom: 5px; color: #2e6942; }
+  
+  .profile-photo-box {
+    width: 90px !important;
+    height: 120px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .exp-item { 
+    display: grid !important; 
+    grid-template-columns: 180px 1fr !important;
+    gap: 20px !important;
+    padding: 15px 0 !important;
+  }
 }
 
 /* ===== 响应式 ===== */
@@ -351,7 +363,7 @@ body {
         <button class="nav-link active" data-page="overview" onclick="switchPage('overview')">概览</button>
         <button class="nav-link" data-page="skills" onclick="switchPage('skills')">技能与教育</button>
         <button class="nav-link" data-page="experience" onclick="switchPage('experience')">工作经历</button>
-        <div class="lucky-tip-badge"> 屏幕任意点击有惊喜</div>
+        <div class="lucky-tip-badge">💡 屏幕任意点击有惊喜</div>
         <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF简历</button>
       </div>
     </div>
@@ -379,7 +391,7 @@ body {
             <p>手机号码：<span>133-4139-8551</span></p>
             <p>电子邮箱：<span>2801701239@qq.com</span></p>
             <p>出生年月：<span>2000.09（26岁）</span></p>
-            <p>最高学历：<span>大专（本科在读）</span></p>
+            <p>最高学历：<span>大专</span></p>
             <p>现居城市：<span>广东深圳</span></p>
           </div>
         </div>
@@ -451,14 +463,14 @@ body {
             <div class="edu-item">
               <div class="edu-time">2025.09 - 2028.06</div>
               <div class="edu-school">广东外语外贸大学</div>
-              <div class="edu-major">大数据与会计 (本科 / 非全日制)</div>
+              <div class="edu-major">大数据与会计 </div>
               <div class="edu-courses">主修：大数据分析、高级财务会计、审计学、财务分析、税法实务等。</div>
             </div>
 
             <div class="edu-item" style="border-bottom:none;">
               <div class="edu-time">2015.09 - 2018.06</div>
               <div class="edu-school">邵阳县工业职业技术学院</div>
-              <div class="edu-major">财务会计 (大专)</div>
+              <div class="edu-major">财务会计</div>
               <div class="edu-courses">主修：基础会计、经济法、成本会计、会计电算化、财务报表分析等。</div>
             </div>
           </div>
@@ -547,7 +559,7 @@ body {
 <div class="toast-overlay" id="luckyToast">
   <div class="toast-box">
     <h3> 获得今日打工人能量祝福 </h3>
-    <p id="luckyText">祝您：薪水翻倍，准点下班！</p>
+    <p id="luckyText">祝您：工作顺利，薪水翻倍！</p>
     <button class="toast-close" onclick="closeLuckyToast(event)">收下吉利话，继续看简历 </button>
   </div>
 </div>
@@ -581,9 +593,9 @@ function exportPDF() {
 
 // 随机打工人吉利话列表
 const luckyPhrases = [
-  " 诸事顺利！今天工作不超载，下班绝对不加班！",
-  " 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
-  " 代码跑得快，报销秒批过，开心每一天！",
+  " 诸事顺利！今天工作不超载！",
+  "财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
+  " 摸鱼快乐！代码跑得快，报销秒批过，开心每一天！",
   " 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
   " 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！",
   " 脉动回来！今天审核的单子全都是对的，没有平账烦恼！"
@@ -611,3 +623,4 @@ function closeLuckyToast(e) {
 </script>
 </body>
 </html>
+```eof
