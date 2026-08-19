@@ -175,17 +175,18 @@ body {
   border-top: 1px solid var(--text-main); padding-top: 25px;
 }
 .profile-photo-box {
-  width: 100px;
-  height: 130px;
-  background: #e4edf3;
-  border: 1px dashed var(--accent);
-  border-radius: 6px;
+  width: 105px;
+  height: 140px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
   margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  overflow: hidden;
+  background: #e4edf3;
+}
+.profile-photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .profile-name { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 15px; letter-spacing: 2px; }
 .profile-details { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; }
@@ -350,7 +351,7 @@ body {
         <button class="nav-link active" data-page="overview" onclick="switchPage('overview')">概览</button>
         <button class="nav-link" data-page="skills" onclick="switchPage('skills')">技能与教育</button>
         <button class="nav-link" data-page="experience" onclick="switchPage('experience')">工作经历</button>
-        <div class="lucky-tip-badge"> </div>
+        <div class="lucky-tip-badge"> 屏幕任意点击有惊喜</div>
         <button class="pdf-btn-nav" onclick="exportPDF()">导出PDF简历</button>
       </div>
     </div>
@@ -367,10 +368,10 @@ body {
       </div>
       
       <div class="overview-grid">
-        <!-- 左侧个人档案与照片区域 -->
+        <!-- 左侧个人档案与真实照片 -->
         <div class="profile-card">
           <div class="profile-photo-box">
-            <span>证件照区域</span>
+            <img src="photo.jpg" alt="刘珊证件照">
           </div>
           <h2 class="profile-name">刘 珊</h2>
           <div class="profile-details">
@@ -378,7 +379,7 @@ body {
             <p>手机号码：<span>133-4139-8551</span></p>
             <p>电子邮箱：<span>2801701239@qq.com</span></p>
             <p>出生年月：<span>2000.09（26岁）</span></p>
-            <p>最高学历：<span>大专</span></p>
+            <p>最高学历：<span>大专（本科在读）</span></p>
             <p>现居城市：<span>广东深圳</span></p>
           </div>
         </div>
@@ -450,14 +451,14 @@ body {
             <div class="edu-item">
               <div class="edu-time">2025.09 - 2028.06</div>
               <div class="edu-school">广东外语外贸大学</div>
-              <div class="edu-major">大数据与会计 ( 非全日制)</div>
+              <div class="edu-major">大数据与会计 (本科 / 非全日制)</div>
               <div class="edu-courses">主修：大数据分析、高级财务会计、审计学、财务分析、税法实务等。</div>
             </div>
 
             <div class="edu-item" style="border-bottom:none;">
               <div class="edu-time">2015.09 - 2018.06</div>
               <div class="edu-school">邵阳县工业职业技术学院</div>
-              <div class="edu-major">财务会计 </div>
+              <div class="edu-major">财务会计 (大专)</div>
               <div class="edu-courses">主修：基础会计、经济法、成本会计、会计电算化、财务报表分析等。</div>
             </div>
           </div>
@@ -547,7 +548,7 @@ body {
   <div class="toast-box">
     <h3> 获得今日打工人能量祝福 </h3>
     <p id="luckyText">祝您：薪水翻倍，准点下班！</p>
-    <button class="toast-close" onclick="closeLuckyToast(event)">收下吉利话，继续看简历 🚀</button>
+    <button class="toast-close" onclick="closeLuckyToast(event)">收下吉利话，继续看简历 </button>
   </div>
 </div>
 
@@ -580,19 +581,18 @@ function exportPDF() {
 
 // 随机打工人吉利话列表
 const luckyPhrases = [
-  " 诸事顺利！今天工作不超载！",
+  " 诸事顺利！今天工作不超载，下班绝对不加班！",
   " 财运亨通！看这份简历的 HR，今年奖金直接拿大头！",
-  " 报销秒批过，开心每一天！",
+  " 代码跑得快，报销秒批过，开心每一天！",
   " 好运连连！今天老板不找茬，同事个个是精英，准点溜溜球！",
   " 薪水暴涨！祝贵公司业绩长虹，HR 薪资节节高升！",
   " 脉动回来！今天审核的单子全都是对的，没有平账烦恼！"
 ];
 
-// 核心修改：监听整个页面的点击事件（点击屏幕任意地方即可触发，排除点击按钮本身的冲突）
+// 全局点击任意地方触发盲盒彩蛋
 document.addEventListener('click', (e) => {
-  // 如果封面还没打开，或者点击的是弹窗本身/关闭按钮/导航按钮，则不触发全屏盲盒
   const cover = document.getElementById('albumCover');
-  if (cover && !cover.classList.contains('opened')) return; // 封面没打开前先不触发
+  if (cover && !cover.classList.contains('opened')) return; 
   if (e.target.closest('.toast-box') || e.target.closest('.nav') || e.target.closest('.pdf-btn-nav')) return;
   
   showLuckyPhrase();
@@ -605,7 +605,7 @@ function showLuckyPhrase() {
 }
 
 function closeLuckyToast(e) {
-  e.stopPropagation(); // 阻止事件冒泡，避免关弹窗的时候又触发一次点击
+  e.stopPropagation(); 
   document.getElementById('luckyToast').style.display = 'none';
 }
 </script>
