@@ -100,15 +100,16 @@ body.en-mode span.lang-en { display: inline; }
   padding: 15px 5%;
   display: flex; justify-content: space-between; align-items: center;
   transition: background 0.4s ease;
+  flex-wrap: wrap; /* 为移动端准备 */
 }
 .nav-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; }
-.nav-links { display: flex; gap: 25px; align-items: center; }
+.nav-links { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
 .nav-link {
   text-decoration: none; color: var(--text-muted); font-size: 0.9rem;
   transition: color 0.3s; cursor: pointer; background: none; border: none;
 }
 .nav-link:hover { color: var(--accent-color); }
-.controls { display: flex; gap: 12px; align-items: center; border-left: 1px solid var(--border-color); padding-left: 15px; }
+.controls { display: flex; gap: 12px; align-items: center; border-left: 1px solid var(--border-color); padding-left: 15px; flex-wrap: wrap; }
 .btn-icon { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; font-weight: 500;}
 .btn-icon:hover { background: var(--text-main); color: var(--bg-color); }
 
@@ -133,10 +134,10 @@ body.en-mode span.lang-en { display: inline; }
 
 /* 插画与模拟后台修改 */
 .hero-illustration {
-  flex: 1; display: flex; justify-content: center; align-items: center; position: relative;
+  flex: 1; display: flex; justify-content: center; align-items: center; position: relative; width: 100%;
 }
 .illustration-placeholder {
-  width: 400px; height: 400px; border: 1px solid var(--border-color); border-radius: 20px;
+  width: 400px; height: 400px; max-width: 100%; border: 1px solid var(--border-color); border-radius: 20px;
   background-color: var(--card-bg);
   background-position: center; background-size: cover; background-repeat: no-repeat;
   position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -165,7 +166,7 @@ body.en-mode span.lang-en { display: inline; }
 
 /* ===== 4. 履历时间轴 (左侧大型卡通地球仪布局) ===== */
 .exp-container { display: flex; gap: 50px; align-items: flex-start; max-width: 1150px; margin: 0 auto; }
-.exp-globe-wrapper { flex: 0 0 450px; position: sticky; top: 100px; text-align: center; }
+.exp-globe-wrapper { flex: 0 0 450px; max-width: 100%; position: sticky; top: 100px; text-align: center; }
 .exp-timeline-wrapper { flex: 1; }
 .globe-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; font-style: italic; }
 
@@ -174,7 +175,7 @@ body.en-mode span.lang-en { display: inline; }
   content: ''; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px;
   background: var(--bg-color); border: 2px solid var(--accent-color); border-radius: 50%;
 }
-.tl-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; flex-wrap: wrap;}
+.tl-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: baseline; flex-wrap: wrap; gap: 5px;}
 .tl-company { font-size: 1.25rem; font-weight: 600; }
 .tl-date { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; letter-spacing: 1px;}
 .tl-role { color: var(--accent-color); font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; }
@@ -187,11 +188,6 @@ body.en-mode span.lang-en { display: inline; }
 @keyframes flashHighlight {
    0%, 100% { background: transparent; padding-top: 0; padding-bottom: 0; box-shadow: none; border-radius:0;}
    15%, 75% { background: var(--card-bg); padding-top: 25px; padding-bottom: 25px; box-shadow: inset 5px 0 0 var(--accent-color); border-radius: 0 12px 12px 0; }
-}
-
-@media (max-width: 1000px) {
-   .exp-container { flex-direction: column; align-items: center; }
-   .exp-globe-wrapper { flex: auto; position: static; width: 100%; margin-bottom: 40px; }
 }
 
 /* ===== 5. "此刻" 手账互动区 (可拖拽) ===== */
@@ -226,6 +222,48 @@ body.en-mode span.lang-en { display: inline; }
 }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .toast-box p { font-size: 1rem; color: var(--text-main); margin-bottom: 25px; font-weight: 600; }
+
+/* ==================================================== */
+/* =============== 📱 移动端自适应核心代码 ============== */
+/* ==================================================== */
+@media (max-width: 1000px) {
+   .exp-container { flex-direction: column; align-items: center; }
+   .exp-globe-wrapper { flex: auto; position: static; width: 100%; margin-bottom: 40px; }
+}
+
+@media (max-width: 768px) {
+  /* 导航栏折叠与居中 */
+  .nav { padding: 15px 5%; flex-direction: column; gap: 15px; text-align: center; }
+  .nav-links { justify-content: center; gap: 12px; }
+  .controls { padding-left: 0; border-left: none; width: 100%; justify-content: center; margin-top: 5px;}
+  
+  /* 首屏：改为上下布局 */
+  .hero { flex-direction: column; padding: 160px 6% 60px; text-align: center; gap: 40px;}
+  .hero-title { font-size: 2.2rem; }
+  .hero-subtitle { font-size: 1rem; min-height: 80px;}
+  .hero-info p { justify-content: center; }
+  
+  /* 头像插画等比缩放 */
+  .illustration-placeholder { width: 100%; max-width: 320px; height: 320px; }
+  
+  /* 技能区域：1列显示 */
+  .section-wrapper { padding: 60px 6%; }
+  .section-title { font-size: 1.8rem; margin-bottom: 30px; }
+  .skills-grid { grid-template-columns: 1fr; gap: 20px; }
+  
+  /* 时间轴细节优化 */
+  .tl-company { font-size: 1.1rem; }
+  .timeline-item { padding-left: 20px; }
+  .timeline-item::before { left: -7px; width: 12px; height: 12px; }
+
+  /* 手账区域：重置卡片初始坐标防止溢出屏幕 */
+  .moments-section { height: 750px; }
+  .draggable { transform: none !important; }
+  .drag-quote { top: 150px !important; left: 5% !important; font-size: 1.1rem; width: 90%; }
+  .drag-text:nth-of-type(2) { top: 320px !important; left: 10% !important; }
+  .drag-text:nth-of-type(3) { top: 400px !important; left: 15% !important; }
+  .drag-pic { top: 500px !important; left: 50% !important; margin-left: -80px; }
+}
 
 /* 打印样式 */
 @media print {
@@ -548,15 +586,18 @@ window.onload = () => {
 
 // ===== 核心功能 3：彩色卡通 3D 地球仪联动交互 =====
 function initGlobe() {
-  const width = 450; // 放大地球仪
+  const width = 450; 
   const height = 450;
   const container = d3.select("#globe-viz");
   if(container.empty()) return;
   container.selectAll("*").remove();
 
+  // 🔥 响应式优化关键：移除固定宽高属性，使用 viewBox 配合 100% 宽度自适应
   const svg = container.append("svg")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .style("width", "100%")
+      .style("max-width", "450px")
+      .style("height", "auto")
       .style("cursor", "grab");
 
   // 初始化地球位置
@@ -607,7 +648,7 @@ function initGlobe() {
   feMerge.append("feMergeNode").attr("in", "coloredBlur");
   feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-  // 4. 配置你的工作足迹点 (只留深圳和广州，广州兼管了尚品汇和蓝箭)
+  // 4. 配置你的工作足迹点
   const cities = [
     { name_cn: "深圳", name_en: "Shenzhen", coords: [114.05, 22.54], id: "exp-sz", dx: 15, dy: 15 },
     { name_cn: "广州", name_en: "Guangzhou", coords: [113.26, 23.12], id: "gz", dx: -45, dy: -8 }
@@ -618,7 +659,6 @@ function initGlobe() {
   function drawMarkers() {
       markerGroup.selectAll("*").remove();
       cities.forEach(city => {
-          // 判断坐标是否转到了地球背面
           const center = projection.invert([width/2, height/2]);
           const dist = d3.geoDistance(city.coords, center);
           if (dist > Math.PI / 2) return; 
@@ -629,9 +669,8 @@ function initGlobe() {
           const g = markerGroup.append("g")
               .style("cursor", "pointer")
               .on("click", (event) => {
-                  event.stopPropagation(); // 关键！阻止地球仪点击触发全屏盲盒彩蛋
+                  event.stopPropagation();
                   
-                  // 如果点击的是广州，高亮下面所有三个在广州的工作经历
                   if(city.id === 'gz') {
                       ['exp-gz1', 'exp-gz2', 'exp-gz3'].forEach(id => {
                           const target = document.getElementById(id);
@@ -641,10 +680,8 @@ function initGlobe() {
                               target.classList.add('flash');
                           }
                       });
-                      // 页面平滑滚动到广州第一条经历
                       document.getElementById('exp-gz1').scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
-                      // 深圳的单条跳转逻辑
                       const target = document.getElementById(city.id);
                       if(target) {
                           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -692,7 +729,6 @@ function initGlobe() {
           v0 = [event.x, event.y];
           r0 = projection.rotate();
           svg.style("cursor", "grabbing");
-          // 关键：拖拽地球时不触发背后的盲盒彩蛋
           event.sourceEvent.stopPropagation();
       })
       .on("drag", (event) => {
@@ -716,7 +752,6 @@ function initGlobe() {
       }
   });
   
-  // 监听中英文切换事件，重绘地球上的文字标签
   window.addEventListener('langChanged', drawMarkers);
 }
 
@@ -728,7 +763,6 @@ function uploadImage(event) {
     reader.onload = function(e) {
       const dataUrl = e.target.result;
       document.getElementById('custom-illustration').style.backgroundImage = `url(${dataUrl})`;
-      // 保存到浏览器缓存，模拟数据库后台
       localStorage.setItem('customHeroImage', dataUrl);
     };
     reader.readAsDataURL(file);
@@ -749,10 +783,7 @@ function toggleTheme() {
   const themes = ['pink', 'blue', 'green', 'purple'];
   let currentTheme = root.getAttribute('data-theme');
   
-  // 找到当前主题的索引，如果是默认（黑白），索引为 -1
   let currentIndex = themes.indexOf(currentTheme);
-  
-  // 切换到下一个主题，如果是最后一个，则回到默认（移除属性）
   currentIndex++;
   if (currentIndex >= themes.length) {
     root.removeAttribute('data-theme');
@@ -776,6 +807,17 @@ let offsetX = 0, offsetY = 0;
 let highestZ = 100;
 
 draggables.forEach(elem => {
+  // 兼容移动端触摸事件
+  elem.addEventListener('touchstart', (e) => {
+    activeDrag = elem;
+    highestZ += 1;
+    elem.style.zIndex = highestZ;
+    const rect = elem.getBoundingClientRect();
+    offsetX = e.touches[0].clientX - rect.left;
+    offsetY = e.touches[0].clientY - rect.top;
+    e.stopPropagation(); 
+  }, { passive: false });
+
   elem.addEventListener('mousedown', (e) => {
     activeDrag = elem;
     highestZ += 1;
@@ -788,6 +830,17 @@ draggables.forEach(elem => {
   });
 });
 
+document.addEventListener('touchmove', (e) => {
+  if (!activeDrag) return;
+  e.preventDefault(); // 防止拖拽卡片时触发屏幕滚动
+  const parent = activeDrag.parentElement;
+  const parentRect = parent.getBoundingClientRect();
+  let newX = e.touches[0].clientX - parentRect.left - offsetX;
+  let newY = e.touches[0].clientY - parentRect.top - offsetY;
+  activeDrag.style.left = `${newX}px`;
+  activeDrag.style.top = `${newY}px`;
+}, { passive: false });
+
 document.addEventListener('mousemove', (e) => {
   if (!activeDrag) return;
   const parent = activeDrag.parentElement;
@@ -798,14 +851,16 @@ document.addEventListener('mousemove', (e) => {
   activeDrag.style.top = `${newY}px`;
 });
 
-document.addEventListener('mouseup', () => {
+const stopDrag = () => {
   if (activeDrag) {
     activeDrag.style.cursor = 'grab';
     activeDrag = null;
   }
-});
+};
+document.addEventListener('touchend', stopDrag);
+document.addEventListener('mouseup', stopDrag);
 
-// ===== 随机点击彩蛋 (已完美排除和地球仪的点击冲突) =====
+// ===== 随机点击彩蛋 =====
 const luckyPhrases = {
   cn: [
     "事事顺心，手头工作稳稳搞定，不用超负荷硬扛！",
@@ -826,7 +881,6 @@ const luckyPhrases = {
 };
 
 document.addEventListener('click', (e) => {
-  // 核心！排除在特定元素(如弹窗、导航、拖拽手账、和咱们的3D地球仪)点击时误触彩蛋
   if (e.target.closest('.toast-box') || 
       e.target.closest('.nav') || 
       e.target.closest('.draggable') || 
