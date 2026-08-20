@@ -492,13 +492,12 @@ body.en-mode span.lang-en { display: inline; }
 <script>
 // ===== 双语与打字机数据 =====
 const typeWriterTexts = {
-  cn: "亲爱的hr你好，作为一个坚信“能让代码和系统代劳，就绝不手工死磕”的非典型财务，我过去4年最认真的事，就是不断用技术给自己和团队“减负”。我拥有3D打印制造与国内外电商的复合经验。相比于日复一日地机械做表，我更喜欢“造工具”——曾用 Power Query 和 Claude Code手搓出公司的内部财务工作台，把跨平台的杂乱数据变成自动跑通的流水线。在搞定全盘账务、把月均300万+营收的对账误差率压到0.05%以下的同时，我还顺手建立了直观的产品利润模型和库存预警。总而言之，擅长用 IT 思维管账，用数据帮公司把钱花在刀刃上 
-。",
-  en: "Dear HR,
+  cn: `作为一个坚信“能让代码和系统代劳，就绝不手工死磕”的非典型财务，我过去4年最认真的事，就是不断用技术给自己和团队“减负”。我拥有3D打印制造与国内外电商的复合经验。相比于日复一日地机械做表，我更喜欢“造工具”——曾用 Power Query 和 Claude Code手搓出公司的内部财务工作台，把跨平台的杂乱数据变成自动跑通的流水线。在搞定全盘账务、把月均300万+营收的对账误差率压到0.05%以下的同时，我还顺手建立了直观的产品利润模型和库存预警。总而言之，擅长用 IT 思维管账，用数据帮公司把钱花在刀刃上。`,
+  en: `Dear HR,
 As an unconventional finance professional who firmly believes in "letting code and systems do the heavy lifting instead of grinding it out manually," my biggest focus over the past 4 years has been using tech to lighten the workload for myself and my team.
 I bring hybrid experience across 3D printing manufacturing and domestic/cross-border e-commerce. Rather than churning out spreadsheets day in and day out, I prefer "building tools." I built our company's internal finance workstation from scratch using Power Query and Claude Code, turning messy, cross-platform data into an automated, smooth-running pipeline.
 While handling full-cycle accounting and crushing the reconciliation error rate for our 3 million+ monthly revenue down to under 0.05%, I also built intuitive product profit models and inventory alerts along the way.
-In short, I manage finances with an IT mindset, leveraging data to ensure the company spends every penny exactly where it counts."
+In short, I manage finances with an IT mindset, leveraging data to ensure the company spends every penny exactly where it counts.`
 };
 
 let currentLang = 'cn'; // 默认语言
@@ -513,7 +512,13 @@ function typeWriterEffect(text, elementId, speed = 80) {
   
   function type() {
     if (i < text.length) {
-      element.innerHTML += text.charAt(i);
+      // 捕获换行符，转换为 HTML 能识别的 <br> 标签
+      const char = text.charAt(i);
+      if (char === '\n') {
+        element.innerHTML += '<br>';
+      } else {
+        element.innerHTML += char;
+      }
       i++;
       typeWriterTimer = setTimeout(type, speed);
     }
