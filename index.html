@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>刘珊 | 财务主管 · 财务BP</title>
+<!-- 引入 D3.js 引擎用于绘制 3D 地球仪 -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
 <style>
 /* ========== 全局 CSS 变量 (双主题系统) ========== */
 :root {
@@ -30,6 +33,45 @@
   --border-color: #fad1de;
   --gallery-bg: #2d1b22;
   --gallery-text: #ffe4ec;
+}
+
+[data-theme="blue"] {
+  /* 新增：静谧蓝底色主题 */
+  --bg-color: #f0f8ff;
+  --text-main: #1e3a8a;
+  --text-muted: #64748b;
+  --accent-color: #3b82f6;
+  --card-bg: #e0f2fe;
+  --nav-bg: rgba(240, 248, 255, 0.9);
+  --border-color: #bae6fd;
+  --gallery-bg: #0f172a;
+  --gallery-text: #f0f8ff;
+}
+
+[data-theme="green"] {
+  /* 新增：自然绿主题 */
+  --bg-color: #f0fdf4;
+  --text-main: #14532d;
+  --text-muted: #475569;
+  --accent-color: #16a34a;
+  --card-bg: #dcfce7;
+  --nav-bg: rgba(240, 253, 244, 0.9);
+  --border-color: #bbf7d0;
+  --gallery-bg: #064e3b;
+  --gallery-text: #f0fdf4;
+}
+
+[data-theme="purple"] {
+  /* 新增：丁香紫主题 */
+  --bg-color: #faf5ff;
+  --text-main: #4c1d95;
+  --text-muted: #6b7280;
+  --accent-color: #7c3aed;
+  --card-bg: #f3e8ff;
+  --nav-bg: rgba(250, 245, 255, 0.9);
+  --border-color: #e9d5ff;
+  --gallery-bg: #2e1065;
+  --gallery-text: #faf5ff;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -121,9 +163,13 @@ body.en-mode span.lang-en { display: inline; }
 .skill-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center;}
 .skill-detail { font-size: 0.9rem; color: var(--text-muted); text-align: justify; }
 
-/* ===== 4. 履历时间轴 (原汁原味完整呈现) ===== */
-.timeline { max-width: 900px; margin: 0 auto; }
-.timeline-item { border-left: 2px solid var(--border-color); padding-left: 35px; margin-bottom: 50px; position: relative; }
+/* ===== 4. 履历时间轴 (带侧边地球仪排版) ===== */
+.exp-container { display: flex; gap: 50px; align-items: flex-start; max-width: 1000px; margin: 0 auto; }
+.exp-globe-wrapper { flex: 0 0 350px; position: sticky; top: 120px; text-align: center; }
+.exp-timeline-wrapper { flex: 1; }
+.globe-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; font-style: italic; }
+
+.timeline-item { border-left: 2px solid var(--border-color); padding-left: 35px; margin-bottom: 50px; position: relative; transition: all 0.3s ease; }
 .timeline-item::before {
   content: ''; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px;
   background: var(--bg-color); border: 2px solid var(--accent-color); border-radius: 50%;
@@ -135,6 +181,18 @@ body.en-mode span.lang-en { display: inline; }
 .tl-desc { font-size: 0.95rem; color: var(--text-muted); text-align: justify; }
 .tl-desc p { margin-bottom: 8px; }
 .highlight { font-weight: bold; color: var(--text-main); }
+
+/* 点击地球仪锚点跳转时的闪烁提示动画 */
+.flash { animation: flashHighlight 2s ease; }
+@keyframes flashHighlight {
+   0%, 100% { background: transparent; padding-top: 0; padding-bottom: 0; }
+   10%, 80% { background: var(--card-bg); padding-top: 20px; padding-bottom: 20px; border-radius: 0 12px 12px 0; }
+}
+
+@media (max-width: 900px) {
+   .exp-container { flex-direction: column; }
+   .exp-globe-wrapper { flex: auto; position: static; width: 100%; margin-bottom: 40px; }
+}
 
 /* ===== 5. "此刻" 手账互动区 (可拖拽) ===== */
 .moments-section {
@@ -171,7 +229,7 @@ body.en-mode span.lang-en { display: inline; }
 /* 打印样式 */
 @media print {
   body { background: #fff !important; color: #000 !important; overflow: auto !important; }
-  .nav, .hero-illustration, .moments-section, .toast-overlay, .btn-icon { display: none !important; }
+  .nav, .hero-illustration, .moments-section, .toast-overlay, .btn-icon, .exp-globe-wrapper { display: none !important; }
   .hero { min-height: auto; padding: 0; }
   .section-wrapper { padding: 20px 0; }
   .timeline-item { page-break-inside: avoid; }
@@ -190,7 +248,8 @@ body.en-mode span.lang-en { display: inline; }
     <a href="#education" class="nav-link"><span class="lang-cn">教育</span><span class="lang-en">Education</span></a>
     <a href="#moments" class="nav-link"><span class="lang-cn">此刻</span><span class="lang-en">Moments</span></a>
     <div class="controls">
-      <button class="btn-icon" onclick="toggleTheme()"><span class="lang-cn">✨ 主题</span><span class="lang-en">✨ Theme</span></button>
+      <!-- 循环切换主题按钮 -->
+      <button class="btn-icon" onclick="toggleTheme()"><span class="lang-cn">✨ 换个心情</span><span class="lang-en">✨ Theme</span></button>
       <button class="btn-icon" onclick="window.print()">📥 PDF</button>
       <!-- 双语切换开关 -->
       <button class="btn-icon" onclick="toggleLanguage()" style="font-weight:bold; border:none;">
@@ -228,7 +287,7 @@ body.en-mode span.lang-en { display: inline; }
 
   <div class="hero-illustration">
     <!-- 模拟后台自定义图片功能 -->
-    <div class="illustration-placeholder" id="custom-illustration" style="background-image: url('https://api.dicebear.com/7.x/notionists/svg?seed=Shan&backgroundColor=transparent');">
+    <div class="illustration-placeholder" id="custom-illustration" style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/2147638825454145100_0');">
       <button class="edit-img-btn" onclick="document.getElementById('img-upload').click()">
         <span class="lang-cn">⚙️ 后台: 更改插画</span><span class="lang-en">⚙️ Edit Image</span>
       </button>
@@ -268,87 +327,100 @@ body.en-mode span.lang-en { display: inline; }
   </div>
 </section>
 
-<!-- 4. 工作经历 (完整保留) -->
+<!-- 4. 工作经历 (双栏布局：左侧地球仪交互，右侧时间轴) -->
 <section id="experience" class="section-wrapper" style="padding-top: 0;">
-  <h2 class="section-title"><span class="lang-cn">工作经历</span><span class="lang-en">Work Experience</span></h2>
-  <div class="timeline">
-    
-    <!-- 经历 1 -->
-    <div class="timeline-item">
-      <div class="tl-header">
-        <span class="tl-company"><span class="lang-cn">深圳市富亿森增材智造科技有限公司 (3D打印)</span><span class="lang-en">Shenzhen Fuyisen Additive Manufacturing Tech (3D Printing)</span></span>
-        <span class="tl-date"><span class="lang-cn">2026.05 - 至今</span><span class="lang-en">May 2026 - Present</span></span>
-      </div>
-      <div class="tl-role"><span class="lang-cn">财务主管（兼管人事）</span><span class="lang-en">Finance Supervisor (Concurrent HR)</span></div>
-      <div class="tl-desc">
-        <p class="lang-cn"><span class="highlight">财务数字化搭建：</span> 运用 Claude Code 及网站开发技术，从0到1独立开发内部“财务工作台”。实现跨平台业财数据的自动集成与校验，减少线下手工录账环节，大幅提高结账效率。</p>
-        <p class="lang-cn"><span class="highlight">全盘账务与利润测算：</span> 全面负责公司账务及资金收支。结合业务数据，搭建3D打印设备与耗材的单体利润测算模型，为管理层的产品定价与选品提供直观的数据支持。</p>
-        <p class="lang-cn"><span class="highlight">成本与税务管控：</span> 准确核算生产制造成本，并建立各环节成本控制标准；结合制造业税收优惠政策，完成全流程税务申报与筹划，规避经营风险。</p>
-        <p class="lang-cn"><span class="highlight">人事行政统筹：</span> 兼管人力资源工作，统筹员工招聘、入离职管理；负责每月薪资绩效核算及社保公积金缴纳，将财务视角引入人事管理，优化企业用工成本。</p>
-        
-        <p class="lang-en"><span class="highlight">Finance Digitalization:</span> Used Claude Code & web dev tech to build an internal "Financial Dashboard" from 0 to 1, automating data integration and significantly boosting closing efficiency.</p>
-        <p class="lang-en"><span class="highlight">Full-cycle Accounting & Profit Modeling:</span> Managed all accounting/funds. Built a unit profit calculation model for 3D printers & consumables to support management's pricing and product selection.</p>
-        <p class="lang-en"><span class="highlight">Cost & Tax Control:</span> Accurately calculated manufacturing costs and established control standards. Handled full-process tax filing and planning utilizing manufacturing tax incentives.</p>
-        <p class="lang-en"><span class="highlight">HR Administration:</span> Managed recruitment, onboarding/offboarding, payroll, and social security, introducing a financial perspective to optimize labor costs.</p>
-      </div>
+  <h2 class="section-title"><span class="lang-cn">工作经历与足迹</span><span class="lang-en">Experience & Footprints</span></h2>
+  
+  <div class="exp-container">
+    <!-- 左侧：3D 地球仪 -->
+    <div class="exp-globe-wrapper">
+      <div id="globe-viz"></div>
+      <p class="globe-hint">
+        <span class="lang-cn">👆 拖拽旋转，点击城市跳转经历</span>
+        <span class="lang-en">👆 Drag to rotate, click cities to view</span>
+      </p>
     </div>
 
-    <!-- 经历 2 -->
-    <div class="timeline-item">
-      <div class="tl-header">
-        <span class="tl-company"><span class="lang-cn">广州埃里森健康科技有限公司</span><span class="lang-en">Guangzhou Ellison Health Technology Co., Ltd.</span></span>
-        <span class="tl-date"><span class="lang-cn">2024.08 - 2025.05</span><span class="lang-en">Aug 2024 - May 2025</span></span>
+    <!-- 右侧：时间轴详情 -->
+    <div class="exp-timeline-wrapper timeline">
+      
+      <!-- 经历 1：深圳 -->
+      <div class="timeline-item" id="exp-sz">
+        <div class="tl-header">
+          <span class="tl-company"><span class="lang-cn">深圳市富亿森增材智造科技有限公司 (3D打印)</span><span class="lang-en">Shenzhen Fuyisen Additive Manufacturing Tech</span></span>
+          <span class="tl-date"><span class="lang-cn">2026.05 - 至今</span><span class="lang-en">May 2026 - Present</span></span>
+        </div>
+        <div class="tl-role"><span class="lang-cn">财务主管（兼管人事）</span><span class="lang-en">Finance Supervisor (Concurrent HR)</span></div>
+        <div class="tl-desc">
+          <p class="lang-cn"><span class="highlight">财务数字化搭建：</span> 运用 Claude Code 及网站开发技术，从0到1独立开发内部“财务工作台”。实现跨平台业财数据的自动集成与校验，减少线下手工录账环节，大幅提高结账效率。</p>
+          <p class="lang-cn"><span class="highlight">全盘账务与利润测算：</span> 全面负责公司账务及资金收支。结合业务数据，搭建3D打印设备与耗材的单体利润测算模型，为管理层的产品定价与选品提供直观的数据支持。</p>
+          <p class="lang-cn"><span class="highlight">成本与税务管控：</span> 准确核算生产制造成本，并建立各环节成本控制标准；结合制造业税收优惠政策，完成全流程税务申报与筹划，规避经营风险。</p>
+          <p class="lang-cn"><span class="highlight">人事行政统筹：</span> 兼管人力资源工作，统筹员工招聘、入离职管理；负责每月薪资绩效核算及社保公积金缴纳，将财务视角引入人事管理，优化企业用工成本。</p>
+          
+          <p class="lang-en"><span class="highlight">Finance Digitalization:</span> Used Claude Code & web dev tech to build an internal "Financial Dashboard" from 0 to 1, automating data integration and significantly boosting closing efficiency.</p>
+          <p class="lang-en"><span class="highlight">Full-cycle Accounting & Profit Modeling:</span> Managed all accounting/funds. Built a unit profit calculation model for 3D printers & consumables to support management's pricing and product selection.</p>
+          <p class="lang-en"><span class="highlight">Cost & Tax Control:</span> Accurately calculated manufacturing costs and established control standards. Handled full-process tax filing and planning utilizing manufacturing tax incentives.</p>
+          <p class="lang-en"><span class="highlight">HR Administration:</span> Managed recruitment, onboarding/offboarding, payroll, and social security, introducing a financial perspective to optimize labor costs.</p>
+        </div>
       </div>
-      <div class="tl-role"><span class="lang-cn">财务分析专员</span><span class="lang-en">Financial Analyst</span></div>
-      <div class="tl-desc">
-        <p class="lang-cn"><span class="highlight">多平台营收稽核：</span> 负责5大电商平台（抖音、天猫、京东等）月均超300万营收的核算。核对CRM订单、第三方支付与银行流水，将成本费用误差率控制在0.05%以内。</p>
-        <p class="lang-cn"><span class="highlight">数据分析与支持：</span> 使用 Power Query 清洗业务数据，定期出具各店铺及产品线利润表，协助业务部门优化选品与营销投放策略。</p>
-        <p class="lang-cn"><span class="highlight">供应链对账优化：</span> 管理7家核心合作商的往来账与应付账款，优化对账流程，将月度对账周期缩短30%，加快资金周转。</p>
-        <p class="lang-cn"><span class="highlight">库存精细化管理：</span> 监控库存周转率，建立库存预警机制，推动账实相符率由90%提升至98%以上，降低资金占用风险。</p>
 
-        <p class="lang-en"><span class="highlight">Multi-platform Revenue Audit:</span> Handled accounting for >3M RMB avg. monthly revenue across 5 e-commerce platforms (Douyin, Tmall, etc.). Reconciled orders & bank statements, keeping error rate below 0.05%.</p>
-        <p class="lang-en"><span class="highlight">Data Analysis:</span> Cleaned data via Power Query to generate regular P&L statements for stores/product lines, assisting in optimizing product selection and marketing strategies.</p>
-        <p class="lang-en"><span class="highlight">Supply Chain Reconciliation:</span> Managed AP for 7 core partners, optimizing the process to shorten the monthly reconciliation cycle by 30%.</p>
-        <p class="lang-en"><span class="highlight">Inventory Management:</span> Monitored turnover and established early warnings, pushing inventory accuracy from 90% to over 98%.</p>
+      <!-- 经历 2：广州 1 -->
+      <div class="timeline-item" id="exp-gz1">
+        <div class="tl-header">
+          <span class="tl-company"><span class="lang-cn">广州埃里森健康科技有限公司</span><span class="lang-en">Guangzhou Ellison Health Technology Co., Ltd.</span></span>
+          <span class="tl-date"><span class="lang-cn">2024.08 - 2025.05</span><span class="lang-en">Aug 2024 - May 2025</span></span>
+        </div>
+        <div class="tl-role"><span class="lang-cn">财务分析专员</span><span class="lang-en">Financial Analyst</span></div>
+        <div class="tl-desc">
+          <p class="lang-cn"><span class="highlight">多平台营收稽核：</span> 负责5大电商平台（抖音、天猫、京东等）月均超300万营收的核算。核对CRM订单、第三方支付与银行流水，将成本费用误差率控制在0.05%以内。</p>
+          <p class="lang-cn"><span class="highlight">数据分析与支持：</span> 使用 Power Query 清洗业务数据，定期出具各店铺及产品线利润表，协助业务部门优化选品与营销投放策略。</p>
+          <p class="lang-cn"><span class="highlight">供应链对账优化：</span> 管理7家核心合作商的往来账与应付账款，优化对账流程，将月度对账周期缩短30%，加快资金周转。</p>
+          <p class="lang-cn"><span class="highlight">库存精细化管理：</span> 监控库存周转率，建立库存预警机制，推动账实相符率由90%提升至98%以上，降低资金占用风险。</p>
+
+          <p class="lang-en"><span class="highlight">Multi-platform Revenue Audit:</span> Handled accounting for >3M RMB avg. monthly revenue across 5 e-commerce platforms. Reconciled orders & bank statements, keeping error rate below 0.05%.</p>
+          <p class="lang-en"><span class="highlight">Data Analysis:</span> Cleaned data via Power Query to generate regular P&L statements for stores/product lines, assisting in optimizing product selection and marketing strategies.</p>
+          <p class="lang-en"><span class="highlight">Supply Chain Reconciliation:</span> Managed AP for 7 core partners, optimizing the process to shorten the monthly reconciliation cycle by 30%.</p>
+          <p class="lang-en"><span class="highlight">Inventory Management:</span> Monitored turnover and established early warnings, pushing inventory accuracy from 90% to over 98%.</p>
+        </div>
       </div>
+
+      <!-- 经历 3：西安 -->
+      <div class="timeline-item" id="exp-xa">
+        <div class="tl-header">
+          <span class="tl-company"><span class="lang-cn">西安尚品汇网络科技有限公司</span><span class="lang-en">Xi'an Shangpinhui Network Tech Co., Ltd.</span></span>
+          <span class="tl-date"><span class="lang-cn">2022.06 - 2024.07</span><span class="lang-en">Jun 2022 - Jul 2024</span></span>
+        </div>
+        <div class="tl-role"><span class="lang-cn">财务专员（兼管供应链）</span><span class="lang-en">Finance Specialist (Supply Chain)</span></div>
+        <div class="tl-desc">
+          <p class="lang-cn"><span class="highlight">跨平台库存协同：</span> 熟练使用聚水潭、马帮等ERP系统，整合速卖通、亚马逊、TikTok等平台的订单与存货数据。实现多平台库存同步，使订单处理效率提升25%。</p>
+          <p class="lang-cn"><span class="highlight">供应链成本管控：</span> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算供应商应付账款，从成本端提升业务毛利。</p>
+          <p class="lang-cn"><span class="highlight">资产盘点与风控：</span> 主导海内外仓的存货盘点工作，利用ERP数据动态管控库存，账实相符率长期稳定在99%以上。</p>
+          <p class="lang-cn"><span class="highlight">出口报关与税务：</span> 协同完成出口报关流程，通过ERP系统归集出口税务数据并完成申报，确保出海业务合规。</p>
+
+          <p class="lang-en"><span class="highlight">Cross-platform Inventory:</span> Used ERPs (Jushuitan, Mabang) to integrate order & inventory data across platforms, boosting order processing efficiency by 25%.</p>
+          <p class="lang-en"><span class="highlight">Supply Chain Cost Control:</span> Built cost monitoring models for procurement/logistics to optimize fulfillment costs and accurately calculate AP, improving gross margins.</p>
+          <p class="lang-en"><span class="highlight">Inventory Audit:</span> Led inventory counts for domestic & overseas warehouses via ERP, maintaining accuracy above 99%.</p>
+          <p class="lang-en"><span class="highlight">Export Customs & Tax:</span> Coordinated export declarations and consolidated tax data via ERP for compliant overseas operations.</p>
+        </div>
+      </div>
+
+      <!-- 经历 4：广州 2 -->
+      <div class="timeline-item" id="exp-gz2">
+        <div class="tl-header">
+          <span class="tl-company"><span class="lang-cn">广州市蓝箭环保设备有限公司</span><span class="lang-en">Guangzhou Lanjian Environmental Equipment</span></span>
+          <span class="tl-date"><span class="lang-cn">2022.01 - 2022.06</span><span class="lang-en">Jan 2022 - Jun 2022</span></span>
+        </div>
+        <div class="tl-role"><span class="lang-cn">财务专员</span><span class="lang-en">Finance Specialist</span></div>
+        <div class="tl-desc">
+          <p class="lang-cn"><span class="highlight">日常基础核算：</span> 使用金蝶系统独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</p>
+          <p class="lang-cn"><span class="highlight">凭证审核与税务：</span> 月均审核原始票据180余份，确保费用报销合规；按时完成各税种申报及汇算清缴，实操零差错。</p>
+
+          <p class="lang-en"><span class="highlight">Daily Accounting:</span> Used Kingdee software to handle AR/AP, fixed assets, payroll, and monthly financial reporting.</p>
+          <p class="lang-en"><span class="highlight">Voucher Audit & Tax:</span> Audited >180 invoices monthly for compliance; completed all tax filings and annual settlements with zero errors.</p>
+        </div>
+      </div>
+
     </div>
-
-    <!-- 经历 3 -->
-    <div class="timeline-item">
-      <div class="tl-header">
-        <span class="tl-company"><span class="lang-cn">西安尚品汇网络科技有限公司</span><span class="lang-en">Xi'an Shangpinhui Network Tech Co., Ltd.</span></span>
-        <span class="tl-date"><span class="lang-cn">2022.06 - 2024.07</span><span class="lang-en">Jun 2022 - Jul 2024</span></span>
-      </div>
-      <div class="tl-role"><span class="lang-cn">财务专员（兼管供应链）</span><span class="lang-en">Finance Specialist (Supply Chain)</span></div>
-      <div class="tl-desc">
-        <p class="lang-cn"><span class="highlight">跨平台库存协同：</span> 熟练使用聚水潭、马帮等ERP系统，整合速卖通、亚马逊、TikTok等平台的订单与存货数据。实现多平台库存同步，使订单处理效率提升25%。</p>
-        <p class="lang-cn"><span class="highlight">供应链成本管控：</span> 搭建采购与物流成本监控模型，通过询比价优化履约成本；准确核算供应商应付账款，从成本端提升业务毛利。</p>
-        <p class="lang-cn"><span class="highlight">资产盘点与风控：</span> 主导海内外仓的存货盘点工作，利用ERP数据动态管控库存，账实相符率长期稳定在99%以上。</p>
-        <p class="lang-cn"><span class="highlight">出口报关与税务：</span> 协同完成出口报关流程，通过ERP系统归集出口税务数据并完成申报，确保出海业务合规。</p>
-
-        <p class="lang-en"><span class="highlight">Cross-platform Inventory:</span> Used ERPs (Jushuitan, Mabang) to integrate order & inventory data across AliExpress, Amazon, and TikTok, boosting order processing efficiency by 25%.</p>
-        <p class="lang-en"><span class="highlight">Supply Chain Cost Control:</span> Built cost monitoring models for procurement/logistics to optimize fulfillment costs and accurately calculate AP, improving gross margins.</p>
-        <p class="lang-en"><span class="highlight">Inventory Audit:</span> Led inventory counts for domestic & overseas warehouses via ERP, maintaining accuracy above 99%.</p>
-        <p class="lang-en"><span class="highlight">Export Customs & Tax:</span> Coordinated export declarations and consolidated tax data via ERP for compliant overseas operations.</p>
-      </div>
-    </div>
-
-    <!-- 经历 4 -->
-    <div class="timeline-item">
-      <div class="tl-header">
-        <span class="tl-company"><span class="lang-cn">广州市蓝箭环保设备有限公司</span><span class="lang-en">Guangzhou Lanjian Environmental Equipment</span></span>
-        <span class="tl-date"><span class="lang-cn">2022.01 - 2022.06</span><span class="lang-en">Jan 2022 - Jun 2022</span></span>
-      </div>
-      <div class="tl-role"><span class="lang-cn">财务专员</span><span class="lang-en">Finance Specialist</span></div>
-      <div class="tl-desc">
-        <p class="lang-cn"><span class="highlight">日常基础核算：</span> 使用金蝶系统独立处理应收应付、固定资产、薪资核算及月度财务报表编制。</p>
-        <p class="lang-cn"><span class="highlight">凭证审核与税务：</span> 月均审核原始票据180余份，确保费用报销合规；按时完成各税种申报及汇算清缴，实操零差错。</p>
-
-        <p class="lang-en"><span class="highlight">Daily Accounting:</span> Used Kingdee software to handle AR/AP, fixed assets, payroll, and monthly financial reporting.</p>
-        <p class="lang-en"><span class="highlight">Voucher Audit & Tax:</span> Audited >180 invoices monthly for compliance; completed all tax filings and annual settlements with zero errors.</p>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -451,15 +523,165 @@ function toggleLanguage() {
   } else {
     document.body.classList.remove('en-mode');
   }
-  // 切换语言时，重置打字机动画
+  // 切换语言时，重置打字机动画，并触发地球仪标签更新
   typeWriterEffect(typeWriterTexts[currentLang], "typewriter-text");
+  window.dispatchEvent(new Event('langChanged'));
 }
 
-// 页面加载时启动中文打字机
+// 页面加载时启动
 window.onload = () => {
   typeWriterEffect(typeWriterTexts['cn'], "typewriter-text");
-  loadCustomImage(); // 加载后台换的图
+  loadCustomImage(); 
+  initGlobe(); // 启动 3D 地球仪
 };
+
+// ===== 核心功能 6：3D 简笔画风格交互地球仪 =====
+function initGlobe() {
+  const width = 350;
+  const height = 350;
+  const container = d3.select("#globe-viz");
+  if(container.empty()) return;
+
+  const svg = container.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .style("cursor", "grab");
+
+  // 初始化地球位置，居中显示中国区域
+  const projection = d3.geoOrthographic()
+      .scale(160)
+      .translate([width / 2, height / 2])
+      .rotate([-110, -30]); 
+
+  const path = d3.geoPath().projection(projection);
+
+  // 1. 画出地球的外轮廓
+  svg.append("path")
+      .datum({type: "Sphere"})
+      .attr("d", path)
+      .attr("fill", "transparent")
+      .attr("stroke", "var(--text-main)")
+      .attr("stroke-width", 1.5);
+
+  // 2. 画出素描感的经纬线网络
+  const graticule = d3.geoGraticule();
+  const grid = svg.append("path")
+      .datum(graticule)
+      .attr("class", "graticule")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "var(--text-muted)")
+      .attr("stroke-width", 0.3)
+      .style("opacity", 0.6);
+
+  // 3. 提取世界地图陆地边界 (获取数据以绘制简笔画轮廓)
+  const mapGroup = svg.append("g");
+  let landPath = null;
+  d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
+      const land = topojson.feature(world, world.objects.land);
+      landPath = mapGroup.append("path")
+          .datum(land)
+          .attr("d", path)
+          .attr("fill", "transparent")
+          .attr("stroke", "var(--text-muted)")
+          .attr("stroke-width", 0.8)
+          .style("opacity", 0.8);
+  }).catch(e => console.log("使用纯网格线模式"));
+
+  // 4. 配置你的工作足迹点
+  // dx, dy 用于让标签错开，防止广州和深圳因为太近而字叠在一起
+  const cities = [
+    { name_cn: "深圳", name_en: "Shenzhen", coords: [114.05, 22.54], id: "exp-sz", dx: 10, dy: 12 },
+    { name_cn: "广州", name_en: "Guangzhou", coords: [113.26, 23.12], id: "exp-gz1", dx: -35, dy: -8 },
+    { name_cn: "西安", name_en: "Xi'an", coords: [108.93, 34.34], id: "exp-xa", dx: -15, dy: -18 }
+  ];
+
+  const markerGroup = svg.append("g");
+
+  function drawMarkers() {
+      markerGroup.selectAll("*").remove();
+      cities.forEach(city => {
+          // 计算当前点是否转到了地球背面
+          const center = projection.invert([width/2, height/2]);
+          const dist = d3.geoDistance(city.coords, center);
+          if (dist > Math.PI / 2) return; // 如果在背面，就隐藏不画
+
+          const p = projection(city.coords);
+
+          // 添加坐标点与文字，并绑定点击跳转事件
+          const g = markerGroup.append("g")
+              .style("cursor", "pointer")
+              .on("click", () => {
+                  const target = document.getElementById(city.id);
+                  if(target) {
+                      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      // 移除旧闪烁动画，强制重绘后再次加上，实现点击高亮
+                      target.classList.remove('flash');
+                      void target.offsetWidth; 
+                      target.classList.add('flash');
+                  }
+              });
+
+          // 外圈装饰点
+          g.append("circle")
+              .attr("cx", p[0]).attr("cy", p[1])
+              .attr("r", 5).attr("fill", "var(--accent-color)");
+          // 内心点
+          g.append("circle")
+              .attr("cx", p[0]).attr("cy", p[1])
+              .attr("r", 2).attr("fill", "var(--bg-color)");
+          // 城市名
+          g.append("text")
+              .text(currentLang === 'cn' ? city.name_cn : city.name_en)
+              .attr("x", p[0] + city.dx).attr("y", p[1] + city.dy)
+              .attr("fill", "var(--text-main)")
+              .style("font-size", "13px")
+              .style("font-weight", "bold");
+      });
+  }
+
+  function update() {
+      svg.select("path").attr("d", path);
+      grid.attr("d", path);
+      if(landPath) landPath.attr("d", path);
+      drawMarkers();
+  }
+  update();
+
+  // 5. 拖拽旋转互动逻辑
+  let v0, r0;
+  let isDragging = false;
+  svg.call(d3.drag()
+      .on("start", (event) => {
+          isDragging = true;
+          v0 = [event.x, event.y];
+          r0 = projection.rotate();
+          svg.style("cursor", "grabbing");
+      })
+      .on("drag", (event) => {
+          const v1 = [event.x, event.y];
+          const r1 = [r0[0] + (v1[0] - v0[0]) * 0.5, r0[1] - (v1[1] - v0[1]) * 0.5];
+          projection.rotate(r1);
+          update();
+      })
+      .on("end", () => {
+          isDragging = false;
+          svg.style("cursor", "grab");
+      })
+  );
+
+  // 6. 自动缓慢旋转
+  d3.timer(() => {
+      if (!isDragging) {
+          const r = projection.rotate();
+          projection.rotate([r[0] - 0.2, r[1]]); // 控制数字 0.2 可以调快慢
+          update();
+      }
+  });
+  
+  // 监听中英文切换事件，重绘地球上的文字标签
+  window.addEventListener('langChanged', drawMarkers);
+}
 
 // ===== 核心功能 3：后台模拟更换插画 (本地存储持久化) =====
 function uploadImage(event) {
@@ -487,10 +709,18 @@ function loadCustomImage() {
 // ===== 主题切换逻辑 =====
 function toggleTheme() {
   const root = document.documentElement;
-  if (root.getAttribute('data-theme') === 'pink') {
+  const themes = ['pink', 'blue', 'green', 'purple'];
+  let currentTheme = root.getAttribute('data-theme');
+  
+  // 找到当前主题的索引，如果是默认（黑白），索引为 -1
+  let currentIndex = themes.indexOf(currentTheme);
+  
+  // 切换到下一个主题，如果是最后一个，则回到默认（移除属性）
+  currentIndex++;
+  if (currentIndex >= themes.length) {
     root.removeAttribute('data-theme');
   } else {
-    root.setAttribute('data-theme', 'pink');
+    root.setAttribute('data-theme', themes[currentIndex]);
   }
 }
 
