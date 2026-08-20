@@ -8,7 +8,7 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
 <style>
-/* ========== 全局 CSS 变量 (双主题系统) ========== */
+/* ========== 全局 CSS 变量 (多主题系统) ========== */
 :root {
   /* 默认：极简黑白主题 */
   --bg-color: #ffffff;
@@ -23,7 +23,7 @@
 }
 
 [data-theme="pink"] {
-  /* 彩蛋：柔和粉色手账主题 */
+  /* 柔和粉色手账主题 */
   --bg-color: #fff5f7;
   --text-main: #4a2c35;
   --text-muted: #8a6c75;
@@ -36,7 +36,7 @@
 }
 
 [data-theme="blue"] {
-  /* 新增：静谧蓝底色主题 */
+  /* 静谧蓝底色主题 */
   --bg-color: #f0f8ff;
   --text-main: #1e3a8a;
   --text-muted: #64748b;
@@ -49,7 +49,7 @@
 }
 
 [data-theme="green"] {
-  /* 新增：自然绿主题 */
+  /* 自然绿主题 */
   --bg-color: #f0fdf4;
   --text-main: #14532d;
   --text-muted: #475569;
@@ -62,7 +62,7 @@
 }
 
 [data-theme="purple"] {
-  /* 新增：丁香紫主题 */
+  /* 丁香紫主题 */
   --bg-color: #faf5ff;
   --text-main: #4c1d95;
   --text-muted: #6b7280;
@@ -163,9 +163,9 @@ body.en-mode span.lang-en { display: inline; }
 .skill-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center;}
 .skill-detail { font-size: 0.9rem; color: var(--text-muted); text-align: justify; }
 
-/* ===== 4. 履历时间轴 (带侧边地球仪排版) ===== */
-.exp-container { display: flex; gap: 50px; align-items: flex-start; max-width: 1000px; margin: 0 auto; }
-.exp-globe-wrapper { flex: 0 0 350px; position: sticky; top: 120px; text-align: center; }
+/* ===== 4. 履历时间轴 (左侧大型卡通地球仪布局) ===== */
+.exp-container { display: flex; gap: 50px; align-items: flex-start; max-width: 1150px; margin: 0 auto; }
+.exp-globe-wrapper { flex: 0 0 450px; position: sticky; top: 100px; text-align: center; }
 .exp-timeline-wrapper { flex: 1; }
 .globe-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; font-style: italic; }
 
@@ -183,14 +183,14 @@ body.en-mode span.lang-en { display: inline; }
 .highlight { font-weight: bold; color: var(--text-main); }
 
 /* 点击地球仪锚点跳转时的闪烁提示动画 */
-.flash { animation: flashHighlight 2s ease; }
+.flash { animation: flashHighlight 2.5s ease; }
 @keyframes flashHighlight {
-   0%, 100% { background: transparent; padding-top: 0; padding-bottom: 0; }
-   10%, 80% { background: var(--card-bg); padding-top: 20px; padding-bottom: 20px; border-radius: 0 12px 12px 0; }
+   0%, 100% { background: transparent; padding-top: 0; padding-bottom: 0; box-shadow: none; border-radius:0;}
+   15%, 75% { background: var(--card-bg); padding-top: 25px; padding-bottom: 25px; box-shadow: inset 5px 0 0 var(--accent-color); border-radius: 0 12px 12px 0; }
 }
 
-@media (max-width: 900px) {
-   .exp-container { flex-direction: column; }
+@media (max-width: 1000px) {
+   .exp-container { flex-direction: column; align-items: center; }
    .exp-globe-wrapper { flex: auto; position: static; width: 100%; margin-bottom: 40px; }
 }
 
@@ -221,7 +221,8 @@ body.en-mode span.lang-en { display: inline; }
 }
 .toast-box {
   background: var(--bg-color); border: 1px solid var(--text-main); width: 320px; padding: 30px;
-  box-shadow: 10px 10px 0 var(--text-main); text-align: center; animation: slideUp 0.3s ease;
+  border-radius: 0; /* 极简直角 */ box-shadow: 10px 10px 0 var(--text-main);
+  text-align: center; animation: slideUp 0.3s ease;
 }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .toast-box p { font-size: 1rem; color: var(--text-main); margin-bottom: 25px; font-weight: 600; }
@@ -286,7 +287,7 @@ body.en-mode span.lang-en { display: inline; }
   </div>
 
   <div class="hero-illustration">
-    <!-- 模拟后台自定义图片功能 -->
+    <!-- 默认使用你提供的长发雀斑简笔画图片 -->
     <div class="illustration-placeholder" id="custom-illustration" style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/2147638825454145100_0');">
       <button class="edit-img-btn" onclick="document.getElementById('img-upload').click()">
         <span class="lang-cn">⚙️ 后台: 更改插画</span><span class="lang-en">⚙️ Edit Image</span>
@@ -332,12 +333,12 @@ body.en-mode span.lang-en { display: inline; }
   <h2 class="section-title"><span class="lang-cn">工作经历与足迹</span><span class="lang-en">Experience & Footprints</span></h2>
   
   <div class="exp-container">
-    <!-- 左侧：3D 地球仪 -->
+    <!-- 左侧：3D 卡通地球仪 -->
     <div class="exp-globe-wrapper">
       <div id="globe-viz"></div>
       <p class="globe-hint">
-        <span class="lang-cn">👆 拖拽旋转，点击城市跳转经历</span>
-        <span class="lang-en">👆 Drag to rotate, click cities to view</span>
+        <span class="lang-cn">👆 拖拽旋转地球，点击发光的城市跳转经历</span>
+        <span class="lang-en">👆 Drag to rotate, click glowing cities to view</span>
       </p>
     </div>
 
@@ -347,7 +348,7 @@ body.en-mode span.lang-en { display: inline; }
       <!-- 经历 1：深圳 -->
       <div class="timeline-item" id="exp-sz">
         <div class="tl-header">
-          <span class="tl-company"><span class="lang-cn">深圳市富亿森增材智造科技有限公司 (3D打印)</span><span class="lang-en">Shenzhen Fuyisen Additive Manufacturing Tech</span></span>
+          <span class="tl-company"><span class="lang-cn">深圳市富亿森增材智造科技有限公司 (3D打印)</span><span class="lang-en">Shenzhen Fuyisen Additive Manufacturing Tech (3D Printing)</span></span>
           <span class="tl-date"><span class="lang-cn">2026.05 - 至今</span><span class="lang-en">May 2026 - Present</span></span>
         </div>
         <div class="tl-role"><span class="lang-cn">财务主管（兼管人事）</span><span class="lang-en">Finance Supervisor (Concurrent HR)</span></div>
@@ -364,7 +365,7 @@ body.en-mode span.lang-en { display: inline; }
         </div>
       </div>
 
-      <!-- 经历 2：广州 1 -->
+      <!-- 经历 2：广州（埃里森） -->
       <div class="timeline-item" id="exp-gz1">
         <div class="tl-header">
           <span class="tl-company"><span class="lang-cn">广州埃里森健康科技有限公司</span><span class="lang-en">Guangzhou Ellison Health Technology Co., Ltd.</span></span>
@@ -384,8 +385,8 @@ body.en-mode span.lang-en { display: inline; }
         </div>
       </div>
 
-      <!-- 经历 3：西安 -->
-      <div class="timeline-item" id="exp-xa">
+      <!-- 经历 3：广州（西安尚品汇-实际广州） -->
+      <div class="timeline-item" id="exp-gz2">
         <div class="tl-header">
           <span class="tl-company"><span class="lang-cn">西安尚品汇网络科技有限公司</span><span class="lang-en">Xi'an Shangpinhui Network Tech Co., Ltd.</span></span>
           <span class="tl-date"><span class="lang-cn">2022.06 - 2024.07</span><span class="lang-en">Jun 2022 - Jul 2024</span></span>
@@ -404,8 +405,8 @@ body.en-mode span.lang-en { display: inline; }
         </div>
       </div>
 
-      <!-- 经历 4：广州 2 -->
-      <div class="timeline-item" id="exp-gz2">
+      <!-- 经历 4：广州（蓝箭环保） -->
+      <div class="timeline-item" id="exp-gz3">
         <div class="tl-header">
           <span class="tl-company"><span class="lang-cn">广州市蓝箭环保设备有限公司</span><span class="lang-en">Guangzhou Lanjian Environmental Equipment</span></span>
           <span class="tl-date"><span class="lang-cn">2022.01 - 2022.06</span><span class="lang-en">Jan 2022 - Jun 2022</span></span>
@@ -535,46 +536,46 @@ window.onload = () => {
   initGlobe(); // 启动 3D 地球仪
 };
 
-// ===== 核心功能 6：3D 简笔画风格交互地球仪 =====
+// ===== 核心功能 3：彩色卡通 3D 地球仪联动交互 =====
 function initGlobe() {
-  const width = 350;
-  const height = 350;
+  const width = 450; // 放大地球仪
+  const height = 450;
   const container = d3.select("#globe-viz");
   if(container.empty()) return;
+  container.selectAll("*").remove();
 
   const svg = container.append("svg")
       .attr("width", width)
       .attr("height", height)
       .style("cursor", "grab");
 
-  // 初始化地球位置，居中显示中国区域
+  // 初始化地球位置
   const projection = d3.geoOrthographic()
-      .scale(160)
+      .scale(210) // 缩放比例
       .translate([width / 2, height / 2])
       .rotate([-110, -30]); 
 
   const path = d3.geoPath().projection(projection);
 
-  // 1. 画出地球的外轮廓
-  svg.append("path")
-      .datum({type: "Sphere"})
-      .attr("d", path)
-      .attr("fill", "transparent")
-      .attr("stroke", "var(--text-main)")
-      .attr("stroke-width", 1.5);
+  // 1. 海洋底色 (卡通蓝)
+  svg.append("circle")
+      .attr("cx", width/2).attr("cy", height/2)
+      .attr("r", projection.scale())
+      .attr("fill", "#A5D6F9")
+      .attr("stroke", "#6EB2E4")
+      .attr("stroke-width", 3);
 
-  // 2. 画出素描感的经纬线网络
+  // 2. 经纬线 (很淡的白色，营造玩具感)
   const graticule = d3.geoGraticule();
   const grid = svg.append("path")
       .datum(graticule)
-      .attr("class", "graticule")
       .attr("d", path)
       .attr("fill", "none")
-      .attr("stroke", "var(--text-muted)")
-      .attr("stroke-width", 0.3)
-      .style("opacity", 0.6);
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", 1.5)
+      .style("opacity", 0.5);
 
-  // 3. 提取世界地图陆地边界 (获取数据以绘制简笔画轮廓)
+  // 3. 提取世界地图陆地边界
   const mapGroup = svg.append("g");
   let landPath = null;
   d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
@@ -582,18 +583,24 @@ function initGlobe() {
       landPath = mapGroup.append("path")
           .datum(land)
           .attr("d", path)
-          .attr("fill", "transparent")
-          .attr("stroke", "var(--text-muted)")
-          .attr("stroke-width", 0.8)
-          .style("opacity", 0.8);
-  }).catch(e => console.log("使用纯网格线模式"));
+          .attr("fill", "#C5E1A5") // 陆地卡通绿
+          .attr("stroke", "#8EBE68")
+          .attr("stroke-width", 2)
+          .style("opacity", 1);
+  }).catch(e => console.log("加载地图失败"));
 
-  // 4. 配置你的工作足迹点
-  // dx, dy 用于让标签错开，防止广州和深圳因为太近而字叠在一起
+  // 为高亮发光点创建 SVG 滤镜
+  const defs = svg.append("defs");
+  const filter = defs.append("filter").attr("id", "glow");
+  filter.append("feGaussianBlur").attr("stdDeviation", "2.5").attr("result", "coloredBlur");
+  const feMerge = filter.append("feMerge");
+  feMerge.append("feMergeNode").attr("in", "coloredBlur");
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+  // 4. 配置你的工作足迹点 (只留深圳和广州，广州兼管了尚品汇和蓝箭)
   const cities = [
-    { name_cn: "深圳", name_en: "Shenzhen", coords: [114.05, 22.54], id: "exp-sz", dx: 10, dy: 12 },
-    { name_cn: "广州", name_en: "Guangzhou", coords: [113.26, 23.12], id: "exp-gz1", dx: -35, dy: -8 },
-    { name_cn: "西安", name_en: "Xi'an", coords: [108.93, 34.34], id: "exp-xa", dx: -15, dy: -18 }
+    { name_cn: "深圳", name_en: "Shenzhen", coords: [114.05, 22.54], id: "exp-sz", dx: 15, dy: 15 },
+    { name_cn: "广州", name_en: "Guangzhou", coords: [113.26, 23.12], id: "gz", dx: -45, dy: -8 }
   ];
 
   const markerGroup = svg.append("g");
@@ -601,47 +608,65 @@ function initGlobe() {
   function drawMarkers() {
       markerGroup.selectAll("*").remove();
       cities.forEach(city => {
-          // 计算当前点是否转到了地球背面
+          // 判断坐标是否转到了地球背面
           const center = projection.invert([width/2, height/2]);
           const dist = d3.geoDistance(city.coords, center);
-          if (dist > Math.PI / 2) return; // 如果在背面，就隐藏不画
+          if (dist > Math.PI / 2) return; 
 
           const p = projection(city.coords);
 
-          // 添加坐标点与文字，并绑定点击跳转事件
+          // 绑定点击跳转事件 (精准勾稽)
           const g = markerGroup.append("g")
               .style("cursor", "pointer")
-              .on("click", () => {
-                  const target = document.getElementById(city.id);
-                  if(target) {
-                      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      // 移除旧闪烁动画，强制重绘后再次加上，实现点击高亮
-                      target.classList.remove('flash');
-                      void target.offsetWidth; 
-                      target.classList.add('flash');
+              .on("click", (event) => {
+                  event.stopPropagation(); // 关键！阻止地球仪点击触发全屏盲盒彩蛋
+                  
+                  // 如果点击的是广州，高亮下面所有三个在广州的工作经历
+                  if(city.id === 'gz') {
+                      ['exp-gz1', 'exp-gz2', 'exp-gz3'].forEach(id => {
+                          const target = document.getElementById(id);
+                          if(target) {
+                              target.classList.remove('flash');
+                              void target.offsetWidth; 
+                              target.classList.add('flash');
+                          }
+                      });
+                      // 页面平滑滚动到广州第一条经历
+                      document.getElementById('exp-gz1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  } else {
+                      // 深圳的单条跳转逻辑
+                      const target = document.getElementById(city.id);
+                      if(target) {
+                          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          target.classList.remove('flash');
+                          void target.offsetWidth; 
+                          target.classList.add('flash');
+                      }
                   }
               });
 
-          // 外圈装饰点
+          // 绘制红色高亮标记点
           g.append("circle")
               .attr("cx", p[0]).attr("cy", p[1])
-              .attr("r", 5).attr("fill", "var(--accent-color)");
-          // 内心点
-          g.append("circle")
-              .attr("cx", p[0]).attr("cy", p[1])
-              .attr("r", 2).attr("fill", "var(--bg-color)");
-          // 城市名
+              .attr("r", 8)
+              .attr("fill", "#FF5252") // 亮红色
+              .attr("stroke", "#fff")
+              .attr("stroke-width", 2.5)
+              .style("filter", "url(#glow)");
+
+          // 绘制城市文字 (带白色描边防挡)
           g.append("text")
               .text(currentLang === 'cn' ? city.name_cn : city.name_en)
               .attr("x", p[0] + city.dx).attr("y", p[1] + city.dy)
-              .attr("fill", "var(--text-main)")
-              .style("font-size", "13px")
-              .style("font-weight", "bold");
+              .attr("fill", "#D84315")
+              .style("font-size", "16px")
+              .style("font-weight", "900")
+              .style("text-shadow", "2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, -2px 0 0 #fff"); 
       });
   }
 
   function update() {
-      svg.select("path").attr("d", path);
+      svg.select("circle").attr("r", projection.scale());
       grid.attr("d", path);
       if(landPath) landPath.attr("d", path);
       drawMarkers();
@@ -657,6 +682,8 @@ function initGlobe() {
           v0 = [event.x, event.y];
           r0 = projection.rotate();
           svg.style("cursor", "grabbing");
+          // 关键：拖拽地球时不触发背后的盲盒彩蛋
+          event.sourceEvent.stopPropagation();
       })
       .on("drag", (event) => {
           const v1 = [event.x, event.y];
@@ -674,7 +701,7 @@ function initGlobe() {
   d3.timer(() => {
       if (!isDragging) {
           const r = projection.rotate();
-          projection.rotate([r[0] - 0.2, r[1]]); // 控制数字 0.2 可以调快慢
+          projection.rotate([r[0] - 0.3, r[1]]); // 控制数字 0.3 调节转速
           update();
       }
   });
@@ -683,7 +710,7 @@ function initGlobe() {
   window.addEventListener('langChanged', drawMarkers);
 }
 
-// ===== 核心功能 3：后台模拟更换插画 (本地存储持久化) =====
+// ===== 核心功能 4：后台模拟更换插画 (本地存储持久化) =====
 function uploadImage(event) {
   const file = event.target.files[0];
   if (file) {
@@ -706,7 +733,7 @@ function loadCustomImage() {
   }
 }
 
-// ===== 主题切换逻辑 =====
+// ===== 主题循环切换逻辑 =====
 function toggleTheme() {
   const root = document.documentElement;
   const themes = ['pink', 'blue', 'green', 'purple'];
@@ -768,7 +795,7 @@ document.addEventListener('mouseup', () => {
   }
 });
 
-// ===== 随机点击彩蛋 =====
+// ===== 随机点击彩蛋 (已完美排除和地球仪的点击冲突) =====
 const luckyPhrases = {
   cn: [
     "事事顺心，手头工作稳稳搞定，不用超负荷硬扛！",
@@ -789,9 +816,11 @@ const luckyPhrases = {
 };
 
 document.addEventListener('click', (e) => {
+  // 核心！排除在特定元素(如弹窗、导航、拖拽手账、和咱们的3D地球仪)点击时误触彩蛋
   if (e.target.closest('.toast-box') || 
       e.target.closest('.nav') || 
       e.target.closest('.draggable') || 
+      e.target.closest('#globe-viz') || 
       e.target.closest('button')) return;
   
   const phrases = luckyPhrases[currentLang];
